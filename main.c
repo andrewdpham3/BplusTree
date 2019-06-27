@@ -41,6 +41,9 @@ int main(int argc, char *argv[])
 
     int queriesSourcedFromFile = 0;
 	
+
+    char fileReadBuffer[1023];
+
 	// parse any filepath option for queries input file
 	while((opt = getopt(argc, argv, ":if:lrx")) != -1) 
 	{ 
@@ -49,6 +52,16 @@ int main(int argc, char *argv[])
 			case 'f': 
 				printf("filepath: %s\n", optarg); 
 				queriesSourcedFromFile = 1;
+
+                FILE *fp = fopen(optarg, "r");
+
+                while(fgets(fileReadBuffer, 1023, fp)){
+                    printf("%s\n", fileReadBuffer);
+                }
+
+                fclose(fp);
+
+
                 break;
 		} 
 	}
