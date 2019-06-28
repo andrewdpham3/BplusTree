@@ -10,25 +10,49 @@
 #include <stdlib.h>
 #include <unistd.h> 
 
+#include <string.h>
+
 #include "data_types.h"
-#include "storage_engine.h"
+#include "btree.h"
 
-int executeQuery(STORAGECXT_t store, QUERYTYPE_t qt, KEY_t key, VAL_t val){
+
+/*
+ * parses a query command (one line), and routes it to the corresponding storage engine methods
+ */
+int parseRouteQuery(char queryLine[], STORAGECXT_t *store){
     (void) store;
-    (void) qt;
-    (void) key;
-    (void) val;
 
-    switch(qt){
-        case PUT:
-            break;
-        case GET:
-            break; 
-        case RANGE:
-            break;
-        default:
-            break;
+    // printf("enter");
+
+    if(strlen(queryLine) <= 0){
+       perror("parseQuery: queryLine length is empty or malspecified.");
+       return -1; 
+    }else if(strlen(queryLine) < 2){
+        perror("parseQuery: queryLine may be missing additional arguments.");
+        return -1;
     }
+
+    KEY_t key, lowKey, highKey;
+    VAL_t val;
+
+    if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
+        // route a point query
+        // TODO: hook this into your storage engine's put. b+tree's insert.
+        printf(PUT_PATTERN, key, val); // dummy print for now
+    }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
+        // route a get query
+        // TODO: hook this into your storage engine's get. b+tree's find.
+        printf(GET_PATTERN, key); // dummy print for now
+    }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
+        // route a range query
+        // NOTE: implement this for graduate credit 
+        printf(RANGE_PATTERN, lowKey, highKey); // dummy print for now
+    }else {
+        // query not parsed. handle the query as unknown
+        return -1;
+    }
+
+    // fflush(stdin);
 
     return 0;
 }
@@ -56,7 +80,7 @@ int main(int argc, char *argv[])
                 FILE *fp = fopen(optarg, "r");
 
                 while(fgets(fileReadBuffer, 1023, fp)){
-                    printf("%s\n", fileReadBuffer);
+                    parseRouteQuery(fileReadBuffer, NULL);
                 }
 
                 fclose(fp);
