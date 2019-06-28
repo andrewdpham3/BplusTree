@@ -1,117 +1,71 @@
 /*
- *
- * 
- * The storage engine functions prefixed with `wrapper`, map the corresponding k-v operations, 
- * to actual B+Tree functions invoked on your B+Tree.
  * 
  * You will need to write your B+Tree almost entirely from scratch. 
- * If you are having trouble seeing where it materializes here, or need a refresher on how the B+Tree works,
- * first read Ramakrishnan-Gehrke chapter 10 on B+Trees before beginning this assignment. 
- * This chapter will provide many pseudocode level intuition and walkthrough of the 
- * nature of each B+Tree operation.
  * 
+ * B+Trees are dynamically balanced tree structures that provides efficient support for insertion, deletion, equality, and range searches. 
+ * The internal nodes of the tree direct the search and the leaf nodes hold the base data..
  * 
+ * For a basic rundown on B+Trees, we will refer to parts of Chapter 10 of the textbook Ramikrishnan-Gehrke 
+ * (all chapters and page numbers in this assignment prompt refer to the 3rd edition of the textbook).
+ *
+ * Read Chapter 10 which is on Tree Indexing in general. In particular, focus on Chapter 10.3 on B+Tree.
  */
+
 #ifndef BTREE_H
 #define BTREE_H
 
 #include "data_types.h"
 #include "query.h"
 
-/*
- * A struct to store the context of your storage engine.
- * You may wish to extend this struct, to not only store your B+Tree, but also store additional state.
- * 
- * 1. You will need to decide how to hold a B+Tree in your storage context. 
- *      Hint, you will need to modify the storage context struct, 
- *      while thinking about memory management and pointers for accessing your B+Tree.
- */
-typedef struct storageContext {
-    // TODO: you hold a pointer here to find your B+Tree
-} STORAGECXT_t;
+
+/* 
+Designing your C Structs for B+Tree nodes (Chapter 10.3.1)
+How will you represent a B+Tree as a C Struct (or series of C structs that work together)? There are many valid ways to do this part of your design, and we leave it open to you to try and tune this as you progress through the project.
+How will you account for a B+Tree node being an internal node or a leaf node? Will you have a single node type that can conditionally be either of the two types, or will you have two distinct struct types?
+How many children does each internal node have? This is called the fanout of the B+Tree.
+What is the maximum size for a leaf node? How about for an internal node?
+What is the minimum threshold of content for a node, before it has to be part of a rebalancing?
+*/
+
+// TODO: here you will need to define a B+Tree node(s) struct
 
 
-/*
- * The following are wrapper functions which are entry points into your storage engine.
- */
+/* FIND (Chapter 10.4)
+This is an equality search for an entry whose key matches the target key exactly.
+How many nodes need to be accessed during an equality search for a key, within the B+Tree? 
+*/
 
-/*
- *  Get looks for a `targetKey`, and will give back the corresponding key in foundVal, if it exists.
- * 
- *  @Params: 
- *      storageEngine   - the storage engine to operate on
- *      targetKey       - the target key to search for
- *      foundVal        - declared outside the function invocation. should hold any found value.
- * 
- *  Returns:
- *       0 for no result, 
- *       1 if a value exists for `targetKey` in which case `foundVal` is populated
- * 
- */
-int wrapperGet(STORAGECXT_t **storageEngine, KEY_t targetKey, VAL_t *foundVal){
-    // TODO: finish this by running the find operation on your B+Tree.
-    //      You will need to define and declare a method(s) to run find on your B+Tree.
+// TODO: here you will need to define FIND/SEARCH related method(s) of finding key-values in your B+Tree.
 
-    (void) storageEngine;
-    (void) targetKey;
-    (void) foundVal;
 
-    return 0;
-}
+/* INSERT (Chapter 10.5)
+How does inserting an entry into the tree differ from finding an entry in the tree?
+When you insert a key-value pair into the tree, what happens if there is no space in the leaf node? What is the overflow handling algorithm?
+For Splitting B+Tree Nodes (Chapter 10.8.3)
+*/
 
-/*
- *  Put sets a key value pair. 
- *  If a key does not exist previously in the storage engine, it should be inserted.
- *  If the key exists previously, the old value should be overwritten with the newly specified value.
- * 
- *  @Params: 
- *      storageEngine   - the storage engine to operate on
- *      key             - key to add
- *      val             - val to add
- * 
- *  Returns:
- *       0 for failed, 
- *       1 if the k,v pair addition succeeded
- * 
- */
-int wrapperPut(STORAGECXT_t **storageEngine, KEY_t key, VAL_t val){
-    // TODO: finish this by running the `insert` or `update` operation on your B+Tree.
-    //      You will need to define and declare a method(s) to run `insertions` and `updates` on your B+Tree.
-    //      Consider: will you treat `insertions` and `updates` as the same algorithm?
-    //      Consider: how does the design of these B+Tree algorithms compare to `find`?
-    (void) storageEngine;
-    (void) key;
-    (void) val;
-    
-    return 0;
-}
+// TODO: here you will need to define INSERT related method(s) of adding key-values in your B+Tree.
 
-/*
- *  Put sets a key value pair. 
- *  If a key does not exist previously in the storage engine, it should be inserted.
- *  If the key exists previously, the old value should be overwritten with the newly specified value.
- * 
- *  @Params: 
- *      storageEngine      - the storage engine to operate on
- *      lowKey             - key to add
- *      highKey            - val to add
- *      rangeResult        - results, which if found, will be populated 
- *                              (see the query.h definition for more details)
- *  Returns:
- *       0 for no result, 
- *       non-zero indicating the number of the qualifying entries, held inside `rangeResult`'s keys and values
- * 
- */
-// returns 0 for no result
-// returns non-zero for the length of the qualifying entries
-int wrapperRange(STORAGECXT_t **storageEngine, KEY_t lowKey, KEY_t highKey, RANGE_RESULT_t **rangeResult){
-    // TODO GRADUATE: 
-    //      You will need to define and declare a method(s) to run 
-    (void) storageEngine;
-    (void) lowKey;
-    (void) highKey;
-    (void) rangeResult;
-    return 0;
-}
+
+/* BULK LOAD (Chapter 10.8.2)
+Bulk Load is a special operation to build a B+Tree from scratch, from the bottom up, when beginning with an already known dataset.
+Why might you use Bulk Load instead of a series of inserts for populating a B+Tree? Compare the cost of a Bulk Load of N data entries versus that of an insertion of N data entries? What are the tradeoffs?
+*/
+
+// TODO: here you will need to define BULK LOAD related method(s) of initially adding all at once some key-values to your B+Tree.
+// BULK LOAD only can happen at the start of a workload
+
+
+/*RANGE (GRADUATE CREDIT)
+Scans are range searches for entries whose keys fall between a low key and high key.
+Consider how many nodes need to be accessed during a range search for keys, within the B+Tree?
+Can you describe two different methods to return the qualifying keys for a range search? 
+(Hint: how does a range search compare to an equality search?)
+Can you describe a generic cost expression for Scan, measured in number of random accesses, with respect to the depth of the tree?
+*/
+
+// TODO GRADUATE: here you will need to define RANGE for finding qualifying keys and values that fall in a key range.
+
+
 
 #endif
