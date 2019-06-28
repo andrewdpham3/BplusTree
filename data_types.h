@@ -16,9 +16,6 @@
 #ifndef DATA_TYPES_H
 #define DATA_TYPES_H
 
-// query enum
-typedef enum queryType {PUT,GET,RANGE,LOAD} QUERYTYPE_t;
-
 
 // KEY
 typedef int32_t KEY_t;
@@ -37,10 +34,13 @@ typedef int32_t VAL_t;
 #define PUT_PATTERN "p %d %d\n"
 #define GET_PATTERN "g %d\n"
 #define RANGE_PATTERN "r %d %d\n"
+#define LOAD_PATTERN "l %s\n"
+
 
 // SCAN PATTERNS
 #define PUT_PATTERN_SCAN "%d %d"
 #define GET_PATTERN_SCAN "%d"
 #define RANGE_PATTERN_SCAN "%d %d"
+#define LOAD_PATTERN_SCAN "%s"
 
 #endif

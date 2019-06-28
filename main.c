@@ -35,10 +35,19 @@ int parseRouteQuery(char queryLine[], STORAGECXT_t *store){
     KEY_t key, lowKey, highKey;
     VAL_t val;
 
+    // finish loadPath
+    // read a binary file
+    // parse it into an array of keys and array of values, and a total length
+    // pass those as args to a load function
+    char *loadPath = NULL;
+    (void) loadPath;
+
     if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
         // route a point query
         // TODO: hook this into your storage engine's put. b+tree's insert.
         printf(PUT_PATTERN, key, val); // dummy print for now
+    }else if(sscanf(queryLine, LOAD_PATTERN, loadPath) >= 1){
+        // loadPath:
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
         // TODO: hook this into your storage engine's get. b+tree's find.
