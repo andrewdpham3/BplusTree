@@ -45,17 +45,15 @@ int parseRouteQuery(char queryLine[], STORAGECXT_t *store){
     if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
         // route a point query
         // TODO: hook this into your storage engine's put. b+tree's insert.
-        printf(PUT_PATTERN, key, val); // dummy print for now
-    }else if(sscanf(queryLine, LOAD_PATTERN, loadPath) >= 1){
-        // loadPath:
+        printf(PUT_PATTERN, key, val); // Stubbed print for now
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
         // TODO: hook this into your storage engine's get. b+tree's find.
-        printf(GET_PATTERN, key); // dummy print for now
+        printf(GET_PATTERN, key); // Stubbed print for now
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
         // NOTE: implement this for graduate credit 
-        printf(RANGE_PATTERN, lowKey, highKey); // dummy print for now
+        printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
     }else {
         // query not parsed. handle the query as unknown
         return -1;
@@ -99,7 +97,8 @@ int main(int argc, char *argv[])
 		} 
 	}
 
-    // should there be any remaining arguments not parsed by the client
+    // should there be any remaining arguments not parsed by the client, 
+    //  then these cases will handle control flow:
 	
     if(optind < argc){
         perror("Warning: extra arguments were not parsed by s165 client.");

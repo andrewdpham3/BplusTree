@@ -1,6 +1,6 @@
 /*
- * The storage engine functions prefixed with `wrapper`, map the corresponding k-v operations, 
- * to actual B+Tree functions invoked on your B+Tree.
+ * The storage engine functions prefixed with `wrapper`, map the corresponding k-v operations 
+ * of the k-v DSL to actual B+Tree functions invoked on your B+Tree.
  */
 #ifndef STORAGE_ENGINE_H
 #define STORAGE_ENGINE_H

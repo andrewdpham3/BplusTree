@@ -27,8 +27,12 @@ What is the maximum size for a leaf node? How about for an internal node?
 What is the minimum threshold of content for a node, before it has to be part of a rebalancing?
 */
 
-// TODO: here you will need to define a B+Tree node(s) struct
+// TODO: here you will need to define a B+Tree node(s) struct(s)
 
+
+/* The following are methods that can be invoked on B+Tree node(s).
+ * Hint: You may want to review different design patterns for passing structs into C functions.
+ */
 
 /* FIND (Chapter 10.4)
 This is an equality search for an entry whose key matches the target key exactly.
@@ -60,7 +64,7 @@ Why might you use Bulk Load instead of a series of inserts for populating a B+Tr
 Scans are range searches for entries whose keys fall between a low key and high key.
 Consider how many nodes need to be accessed during a range search for keys, within the B+Tree?
 Can you describe two different methods to return the qualifying keys for a range search? 
-(Hint: how does a range search compare to an equality search?)
+(Hint: how does the algorithm of a range search compare to an equality search? What are their similarities, what is different?)
 Can you describe a generic cost expression for Scan, measured in number of random accesses, with respect to the depth of the tree?
 */
 
