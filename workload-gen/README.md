@@ -1,9 +1,7 @@
-# Harvard CS265 - Big Data Systems #
+# Harvard CS s165 - Big Data Systems #
 ---
-*This repository contains the code of a workload generator for an LSM tree.
-It follows the DSL specified for the systems project of CS265 (Spring 2017).*
-
-*More information can be found [here](http://daslab.seas.harvard.edu/classes/cs265/project.html).*
+*This repository contains the code of a workload generator for a key-value database.
+It follows the DSL specified for A1 of CS s165.*
 
 ## Workload and Data Generator ##
 ---
@@ -33,7 +31,6 @@ You can now run the following to see all available options:
 ./generator --help
 ```
 
-![Screen Shot 2017-01-24 at 1.21.17 PM.png](https://bitbucket.org/repo/9de5E4/images/2315274117-Screen%20Shot%202017-01-24%20at%201.21.17%20PM.png)
 
 ### Examples ###
 
@@ -59,6 +56,7 @@ You can now run the following to see all available options:
 ## Evaluating a Workload ##
 ---
 You can execute a workload and see some basic statistics about it, using the ```evaluate.py``` python script.
+This script runs the workload on an in-memory python dict-backed implementation of a key-value database that follows the DSL.
 
 ### Dependencies ###
 You need to install the [blist](https://pypi.python.org/pypi/blist/?) library.

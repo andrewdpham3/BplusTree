@@ -1,13 +1,16 @@
 /**
  * ================================================
- * = Harvard University | CS265 | Systems Project =
+ * = Harvard University | CS s165 | A1 ============
  * ================================================
- * ========== LSM TREE WORKLOAD GENERATOR =========
+ * ========== KV-DSL Workload Generator ===========
+ * ================================================
+ * Adopted from CS265 by 
+ * Kostas Zoumpatianos <kostas@seas.harvard.edu>
+ * Michael Kester <kester@eecs.harvard.edu>
  * ================================================
  * Contact:
  * ========
- * - Kostas Zoumpatianos <kostas@seas.harvard.edu>
- * - Michael Kester <kester@eecs.harvard.edu>
+ * - Wilson Qin <wilsonqin@seas.harvard.edu>
  */
 
 #include <ctype.h>
@@ -100,7 +103,6 @@ void usage(char * binary) {
     #ifdef LOGO_IN_USAGE
     fprintf(stderr, DASLAB_LOGO);
     #endif
-    fprintf(stderr, LOGO);
     fprintf(stderr, PRODUCT);
     fprintf(stderr, "Usage: %s\n\
         --puts [number of put operations]\n\
@@ -221,7 +223,7 @@ void print_settings(struct settings *s) {
     /////////////////////////////////////
     //           PRINT INFO            //
     /////////////////////////////////////
-    fprintf(stderr, "+---------- CS 265 ----------+\n");
+    fprintf(stderr, "+---------- s165 ------------+\n");
     fprintf(stderr, "|        WORKLOAD INFO       |\n");
     fprintf(stderr, "+----------------------------+\n");
     // Seed

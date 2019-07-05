@@ -1,12 +1,15 @@
 # ================================================
-# = Harvard University | CS265 | Systems Project =
+# = Harvard University | CS s165 | A1            =
 # ================================================
-# ========== LSM TREE WORKLOAD EVALUATOR =========
+# ========== KV-DSL WORKLOAD EVALUATOR ===========
+# ================================================
+# Adopted from CS265 by 
+# Kostas Zoumpatianos <kostas@seas.harvard.edu>
+# Michael Kester <kester@eecs.harvard.edu>
 # ================================================
 # Contact:
 # ========
-# - Kostas Zoumpatianos <kostas@seas.harvard.edu>
-# - Michael Kester <kester@eecs.harvard.edu>
+# - Wilson Qin <wilsonqin@seas.harvard.edu>
 
 import sys
 import time
