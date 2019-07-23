@@ -28,7 +28,8 @@ typedef struct storageContext {
  * 
  * You will need to make sure these call your B+Tree to do actual data acccess operations.
  * Your B+Tree will need multiple supporting methods in order to be complete.
- * It is up to you to design: define and declare the additional functions B+t
+ * It is up to you to design: define and declare the additional functions in B+Tree,
+ *      and how they interact with the methods in these files.
  */
 
 /*
@@ -83,14 +84,14 @@ int wrapperPut(STORAGECXT_t **storageEngine, KEY_t key, VAL_t val){
 }
 
 /*
- *  Put sets a key value pair. 
- *  If a key does not exist previously in the storage engine, it should be inserted.
- *  If the key exists previously, the old value should be overwritten with the newly specified value.
+ *  Range finds a set of key value pairs that qualify between a low and high range. 
+ *  Low key should be inclusive and High key should be exclusive.
+ *  
  * 
  *  @Params: 
  *      storageEngine      - the storage engine to operate on
- *      lowKey             - key to add
- *      highKey            - val to add
+ *      lowKey             - inclusive low point of the range to find
+ *      highKey            - exclusive high point of the range to find
  *      rangeResult        - results, which if found, will be populated 
  *                              (see the query.h definition for more details)
  *  Returns:
