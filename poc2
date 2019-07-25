@@ -1,0 +1,132 @@
+/*b+tree proof of concept
+andrew pham, anp6338@g.harvard.edu
+this file is not required for program function
+it is a proof of concept I used as scratch paper*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#define INITIAL_CAPACITY 2
+
+void push(int *arr, int index, int value, int *size, int *capacity){
+     if(*size > *capacity){
+          realloc(arr, sizeof(arr) * 2);
+          *capacity = sizeof(arr) * 2;
+     }     
+	arr[index] = value;
+     *size = *size + 1;
+}
+
+typedef struct node node;
+struct node{
+	int a,b;
+	node *p1, *p2, *p3;
+	bool isleaf;
+};
+
+node* first(node* n){
+	if(n->p1!=0)
+		first(n->p1);
+	else
+		return n;
+}
+
+void addchildren(node * n){
+	node n1,n2,n3;
+	//initialize all values to zero
+	n1.a=0;
+	n1.b=0;
+	n2.a=0;
+	n2.b=0;
+	n3.a=0;
+	n3.b=0;
+	//point parent to children
+	n->p1=&n1;
+	n->p2=&n2;
+	n->p3=&n3;
+	//in order children points to eachother
+	n1.p1=0;
+	n1.p3=&n2;
+	n2.p1=&n1;
+	n2.p3=&n3;
+	n3.p1=&n2;
+	n3.p3=0;
+	//set isleaf
+	n->isleaf=false;
+	n1.isleaf=true;
+	n2.isleaf=true;
+	n3.isleaf=true;
+}
+
+void addlevel(node * n){
+	node* next=n->p3;
+	addchildren(n);
+	if(next==0){
+		addlevel(next);
+		//link in order traversals
+		n->p3->p3=next->p1->p1;
+		next->p1->p1=n->p3->p3;
+	}
+}
+
+int countdnodes(node * n){
+	int count=1;
+	if(n->p3!=0)
+		count+=countdnodes(n->p3);
+	return count;
+}
+
+int main(){
+	//poc dynamic array
+     int size = 0;
+     int capacity = INITIAL_CAPACITY;
+     int* arr = malloc(INITIAL_CAPACITY * sizeof(int));
+
+	//poc hardcode tree
+	node root;
+	root.a=10;
+	root.b=20;
+	node data1, data2, data3;
+	data1.a=5;
+	data1.b=6;
+	data2.a=11;
+	data2.b=15;
+	data3.a=22;
+	data3.b=25;
+	//now for the pointers...
+	root.p1=&data1;
+	root.p2=&data2;
+	root.p3=&data3;
+	//leafs are linked together
+	data1.p1=0;
+	data1.p3=&data2;
+	data2.p1=&data1;
+	data2.p3=&data3;
+	data3.p1=&data2;
+	data3.p3=0;
+	//and a little test...
+	printf("%i", root.p1->a);
+	printf("\n");
+	
+	//find first data node
+	printf("%i", first(&data3)->a);
+	printf("\n");
+
+	//poc dynamic data array
+	node* head=first(&data3);
+	bool end=false;
+	int k=0;
+	while(!end){
+		push(arr, k, head->a, &size, &capacity);
+		k++;
+		push(arr, k, head->b, &size, &capacity);
+		k++;
+		if(head->p3==0)
+			end=true;
+		else
+			head=head->p3;
+	}
+	for(int i=0;i<size;i++)
+		printf("%i", arr[i]);
+	printf("\n");
+}
