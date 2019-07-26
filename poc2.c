@@ -34,7 +34,7 @@ typedef struct node node;
 struct node{
 	int a,b;
 	node *p1, *p2, *p3;
-	bool isleaf;
+	bool leaf;
 };
 node* newnode(){
     node * n=(node*)malloc(sizeof(node));
@@ -76,11 +76,11 @@ void addchildren(node* n){
 	n2->p3=n3;
 	n3->p1=n2;
 	n3->p3=NULL;
-	//set isleaf
-	n->isleaf=false;
-	n1->isleaf=true;
-	n2->isleaf=true;
-	n3->isleaf=true;
+	//set leaf
+	n->leaf=false;
+	n1->leaf=true;
+	n2->leaf=true;
+	n3->leaf=true;
 }
 
 void addlevel(node* n){
@@ -102,22 +102,77 @@ int countdnodes(node* n){
 	return count;
 }
 
-void treebuilder(node* n){
-	if(!n->isleaf){
-		treebuilder(n->p1);
-		treebuilder(n->p2);
-		treebuilder(n->p3);
+void buildtree(node* n){
+	if(!n->leaf){
+		buildtree(n->p1);
+		buildtree(n->p2);
+		buildtree(n->p3);
+		n->a = n->p1->b+1;
+		n->b = n->p3->a-1;
 	}
-	n->a=
-	
+}
+
+bool find(node* n, int a){
+	if(n->leaf && (n->a==a || n->b==a))
+		return true;
+	if(n->leaf)
+		return false;
+	if(!n->leaf){
+		if(a < n->a)
+			find(n->p1,a);
+		if(a>n->a && a<n->b)
+			find(n->p2,a);
+		if(a>n->b)
+			find(n->p3,a);
+	}
+}
+
+void shift(node* n, int a){
+	printf("shift\n");
+	int temp = a;
+	if(a < n->a){
+		temp=n->a;
+		n->a=a;
+	}
+	if(a > n->a && a < n->b){
+		temp=n->b;
+		n->b=a;
+	}
+	if(n->p3 != 0){
+		shift(n->p3,temp);
+	}
+	if(n->p3 == 0){
+		node* nn= newnode();
+		nn->a=temp;
+		nn->b=0;
+		nn->p3=0;
+		nn->p1=n;
+		n->p3=nn;
+	}
+}
+
+void insert(node* n, int a){
+	if(n->leaf && n->b==0){
+		n->b=a;
+	}
+	if(n->leaf && n->b!=0)
+		shift(n, a);
+	if(!n->leaf){
+		printf("not leaf, digging\n");
+		if(a < n->a)
+			insert(n->p1,a);
+		if(a>n->a && a<n->b)
+			insert(n->p2,a);
+		if(a>n->b)
+			insert(n->p3,a);
+	}
 }
 
 int main(){
 	//initial data dynamic array
 	Array a;
-	int i;
 	initArray(&a, 5);  // initially 5 elements
-	for (i = 0; i < 100; i++)
+	for (int i = 0; i < 18; i++)
     	insertArray(&a, i); 
 	printf("We have %d pieces of data\n", a.used);
 	
@@ -148,7 +203,21 @@ int main(){
 		current=current->p3;
 	}
 	printf("Data assigned to leafs\n");
-	
 	//now give values to the tree...
-	//treebuilder(&root);
+	buildtree(&root);
+	
+	//find
+	printf("%d\n", find(&root, 50));
+	
+	//insert
+	insert(&root, 5);
+	
+	//check if insert worked...
+	current=first(&root);
+	for(int i=0;i<8;i++){
+		printf("%i,", current->a);
+		printf("%i|", current->b);
+		current=current->p3;
+	}
+	printf("\n");
 }
