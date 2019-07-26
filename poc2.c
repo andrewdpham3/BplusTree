@@ -128,10 +128,11 @@ bool find(node* n, int a){
 }
 
 void shift(node* n, int a){
-	printf("shift\n");
-	int temp = a;
+	printf("shift %i\n", a);
+	int temp =a;
 	if(a < n->a){
-		temp=n->a;
+		temp=n->b;
+		n->b=n->a;
 		n->a=a;
 	}
 	if(a > n->a && a < n->b){
@@ -168,24 +169,17 @@ void insert(node* n, int a){
 	}
 }
 
-int main(){
-	//initial data dynamic array
-	Array a;
-	initArray(&a, 5);  // initially 5 elements
-	for (int i = 0; i < 18; i++)
-    	insertArray(&a, i); 
-	printf("We have %d pieces of data\n", a.used);
-	
+node* newtree(Array * data ,int size){
 	//initialize the tree
 	printf("Now we make a tree...\n");
-	node root;
-	root.a=0;
-	root.b=0;
-	root.p1=0;
-	root.p3=0;
+	node * root=newnode();
+	root->a=0;
+	root->b=0;
+	root->p1=0;
+	root->p3=0;
+	node* f=root;
 	int dataspots=2;
-	node* f=&root;
-	while(dataspots<a.used){
+	while(dataspots<size){
 		addlevel(f);
 		printf("Add a level\n");
 		f=first(f->p1);
@@ -194,26 +188,64 @@ int main(){
 	}
 	
 	//assign the data to the leafs
-	node* current=f;
-	for(int i=0;i<a.used;){
-		current->a=a.array[i];
+	f=first(root);
+	for(int i=0;i<size;){
+		f->a=data->array[i];
 		i++;
-		current->b=a.array[i];
+		f->b=data->array[i];
 		i++;
-		current=current->p3;
+		f=f->p3;
 	}
 	printf("Data assigned to leafs\n");
 	//now give values to the tree...
-	buildtree(&root);
-	
+	buildtree(root);
+	return root;
+}
+
+int main(){
+	//initial data dynamic array
+	Array a;
+	initArray(&a, 5);  // initially 5 elements
+	for (int i = 0; i < 18; i++)
+    		insertArray(&a, i); 
+	printf("We have %d pieces of data\n", a.used);
+
+	//build a new tree
+	node * r = newtree(&a, a.used);	
+
 	//find
-	printf("%d\n", find(&root, 50));
+	printf("%d\n", find(r, 50));
 	
 	//insert
-	insert(&root, 5);
+	insert(r, 5);
 	
 	//check if insert worked...
-	current=first(&root);
+	node* current=first(r);
+	for(int i=0;i<8;i++){
+		printf("%i,", current->a);
+		printf("%i|", current->b);
+		current=current->p3;
+	}
+	
+	printf("\n\n");
+
+	//then we build the tree again...
+	current=first(r);	
+	Array b;
+	initArray(&b, 5);  // initially 5 elements
+	for (int i = 0; i < countdnodes(current); i++){
+    		insertArray(&b, current->a);
+		insertArray(&b, current->b);
+	}
+	printf("We have %d pieces of data\n", a.used);
+	for(int i=0;i< countdnodes(current)*2;i++)
+		printf("%d,", a.array[i]);
+	printf("\n");
+
+	r = newtree(&b, b.used);
+
+	//print
+	current=first(r);
 	for(int i=0;i<8;i++){
 		printf("%i,", current->a);
 		printf("%i|", current->b);
