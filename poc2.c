@@ -129,8 +129,8 @@ bool find(node* n, int a){
 
 void shift(node* n, int a){
 	printf("shift %i\n", a);
-	int temp =a;
-	if(a < n->a){
+	int temp=a;
+	if(a <= n->a){
 		temp=n->b;
 		n->b=n->a;
 		n->a=a;
@@ -162,7 +162,7 @@ void insert(node* n, int a){
 		printf("not leaf, digging\n");
 		if(a < n->a)
 			insert(n->p1,a);
-		if(a>n->a && a<n->b)
+		if(a >= n->a && a <= n->b)
 			insert(n->p2,a);
 		if(a>n->b)
 			insert(n->p3,a);
@@ -217,11 +217,12 @@ int main(){
 	printf("%d\n", find(r, 50));
 	
 	//insert
-	insert(r, 5);
+	insert(r, 15);
+	insert(r, 3);
 	
 	//check if insert worked...
 	node* current=first(r);
-	for(int i=0;i<8;i++){
+	for(int i=0;i<9;i++){
 		printf("%i,", current->a);
 		printf("%i|", current->b);
 		current=current->p3;
@@ -233,13 +234,14 @@ int main(){
 	current=first(r);
 	Array b;
 	initArray(&b, 5);  // initially 5 elements
-	for (int i = 0; i < countdnodes(current)*2+2; i++){
-    		insertArray(&b, current->a);
+	printf("countdnodes %i\n", countdnodes(current));
+	for (int i=0;i<10;i++){
+		insertArray(&b, current->a);
 		insertArray(&b, current->b);
 		current=current->p3;
 	}
 	printf("\nWe have %d pieces of data\n", a.used);
-	for(int i=0;i< countdnodes(current)*2;i++)
+	for(int i=0;i<b.used;i++)
 		printf("%d,", a.array[i]);
 	printf("\n");
 
@@ -247,7 +249,7 @@ int main(){
 
 	//print
 	current=first(r);
-	for(int i=0;i<8;i++){
+	for(int i=0;i<10;i++){
 		printf("%i,", current->a);
 		printf("%i|", current->b);
 		current=current->p3;
