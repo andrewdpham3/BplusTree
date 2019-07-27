@@ -230,14 +230,15 @@ int main(){
 	printf("\n\n");
 
 	//then we build the tree again...
-	current=first(r);	
+	current=first(r);
 	Array b;
 	initArray(&b, 5);  // initially 5 elements
-	for (int i = 0; i < countdnodes(current); i++){
+	for (int i = 0; i < countdnodes(current)*2+2; i++){
     		insertArray(&b, current->a);
 		insertArray(&b, current->b);
+		current=current->p3;
 	}
-	printf("We have %d pieces of data\n", a.used);
+	printf("\nWe have %d pieces of data\n", a.used);
 	for(int i=0;i< countdnodes(current)*2;i++)
 		printf("%d,", a.array[i]);
 	printf("\n");
