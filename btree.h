@@ -62,7 +62,7 @@ void addchildren(node* n){
 	n2->p3=n3;
 	n3->p1=n2;
 	n3->p3=NULL;
-	//set leaf
+	//set isleaf
 	n->leaf=false;
 	n1->leaf=true;
 	n2->leaf=true;
@@ -73,7 +73,7 @@ void addchildren(node* n){
 void addlevel(node* n){
 	node* next=n->p3;
 	addchildren(n);
-	//printf("Children created for %p\n", n);
+	printf("Children created for %p\n", n);
 	if(next!=0){
 		addlevel(next);
 		//link in order traversals
@@ -123,6 +123,7 @@ int find(node* n, int a){
 //shift moves data during an insert
 void shift(node* n, int a, int v){
 	int temp=a;
+	//insert into a
 	if(a <= n->a){
 		temp=n->b;
 		n->b=n->a;
@@ -131,15 +132,19 @@ void shift(node* n, int a, int v){
 		n->valb=n->vala;
 		n->vala=v;
 	}
+	//insert into b
 	if(a > n->a && a < n->b){
 		temp=n->b;
 		n->b=a;
 		temp=n->valb;
 		n->valb=n->vala;
 	}
-	if(n->p3 != 0){
+	
+	//shift into next node
+	if(n->p3 != 0)
 		shift(n->p3,temp,v);
-	}
+	
+	//create new node at end if necessary
 	if(n->p3 == 0){
 		node* nn= newnode();
 		nn->a=temp;
@@ -153,27 +158,26 @@ void shift(node* n, int a, int v){
 
 //dynamic array struct
 typedef struct {
-  int *array;
-  size_t used;
-  size_t size;
-} Array;
+	int *array;
+    size_t used;
+    size_t size;
+}Array;
 void initArray(Array *a, size_t initialSize) {
 	a->array = (int *)malloc(initialSize * sizeof(int));
 	a->used = 0;
 	a->size = initialSize;
 }
 void insertArray(Array *a, int element) {
-  if (a->used == a->size) {
-    a->size *= 2;
-    a->array = (int *)realloc(a->array, a->size * sizeof(int));
-  }
-  a->array[a->used++] = element;
+    if (a->used == a->size) {
+        a->size *= 2;
+        a->array = (int *)realloc(a->array, a->size * sizeof(int));
+    }
+    a->array[a->used++] = element;
 }
 
-//tree initializer
-node* newtree(Array * data ,int size){
+//tree initializer with bulk data
+void newtree(node * root, Array * data ,int size){
 	printf("Initializing tree...\n");
-	node * root=newnode();
 	root->a=0;
 	root->b=0;
 	root->p1=0;
@@ -200,15 +204,13 @@ node* newtree(Array * data ,int size){
 	printf("Data assigned to leafs\n");
 	//now give values to the tree...
 	buildtree(root);
-	return root;
 }
-node* emptytree(){
+
+//emptytree creates an empty tree with root and 3 children
+void emptytree(node* root){
 	printf("Initializing tree...\n");
-	node * root=newnode();
 	root->a=0;
 	root->b=0;
-	root->p1=0;
-	root->p3=0;
 	addlevel(root);
 	printf("Children added!\n");
 	
@@ -221,26 +223,35 @@ node* emptytree(){
 		i++;
 		f=f->p3;
 	}
-	printf("Data assigned to leafs\n");
-	//now give values to the tree...
-	buildtree(root);
-	printf("Tree Built!\n");
-	return root;
 }
 
 //INSERT
-node* insert(node* n, int a, int v){
-	printf("inserting %i\n", a);
+void insert(node* n, int a, int v){
 	if(n->leaf && n->a==0){
+		printf("Inserting %i into a\n", a);
 		n->a=a;
 		n->vala=v;
 	}
-	if(n->leaf && n->b==0){
+	else if(n->leaf && n->b==0){
+		printf("Inserting %i into b\n", a);		
 		n->b=a;
 		n->valb=v;
 	}
-	if(n->leaf && n->b!=0)
+	if(n->leaf && n->a!=0 && n->b!=0){
+		printf("shift!\n");
 		shift(n, a, v);
+		//trigger tree rebuild
+		node* current=first(n);
+		Array b;
+		initArray(&b, 1);
+		for (int i=0;i<countdnodes(current);i++){
+			insertArray(&b, current->a);
+			insertArray(&b, current->b);
+			current=current->p3;
+		}
+		newtree(n, &b, b.used);
+		printf("New Tree Built!\n");
+	}
 	if(!n->leaf){
 		//printf("not leaf, digging\n");
 		if(a < n->a)
@@ -250,22 +261,13 @@ node* insert(node* n, int a, int v){
 		if(a>n->b)
 			insert(n->p3,a,v);
 	}
-	node* current=first(n);
-	Array b;
-	initArray(&b, 5);
-	for (int i=0;i<10;i++){
-		insertArray(&b, current->a);
-		insertArray(&b, current->b);
-		current=current->p3;
-	}
-	return newtree(&b, b.used);
 }
 
 //UPDATE value
 void update(node* n, int a, int v){
 	if(n->leaf && n->a==a)
 		n->vala=v;
-	if(n->leaf && n->b==a)
+	else if(n->leaf && n->b==a)
 		n->valb=v;
 	if(!n->leaf){
 		//printf("not leaf, digging\n");
