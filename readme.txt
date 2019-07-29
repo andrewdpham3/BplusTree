@@ -43,3 +43,6 @@ The following tests have been created:
 8. 5 million: Insert the minimum 5 million data points
 
 TODO: running the tests
+
+Notes:
+This program may overflow the default maximum stack size in your system. Use command "ulimit -s unlimited" to bypass.
