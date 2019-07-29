@@ -83,9 +83,8 @@ int main(int argc, char *argv[]) {
                 fclose(fp);
 
 				//print
-				printf("print\n");
 				node* current=first(root);
-				for(int i=0;i<2;i++){
+				for(int i=0;i<4;i++){
 					printf("%i,", current->a);
 					printf("%i|", current->b);
 					current=current->p3;
