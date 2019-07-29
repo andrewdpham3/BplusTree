@@ -1,29 +1,19 @@
-/* 
- * CS s165 A1
+/* CS s165 A1
  * Embedded Key Value Store Client
- * Starter Code
- * 
- * By Wilson Qin <wilsonqin@seas.harvard.edu>
+ * Starter Code by Wilson Qin <wilsonqin@seas.harvard.edu>
+ * Implementation by Andrew Pham anp6338@g.harvard.edu
  */
 
 #include <stdio.h> 
 #include <stdlib.h>
 #include <unistd.h> 
-
 #include <string.h>
-
 #include "data_types.h"
-#include "storage_engine.h"
+#include "btree.h"
+//#include "storage_engine.h"
 
-
-/*
- * parses a query command (one line), and routes it to the corresponding storage engine methods
- */
-int parseRouteQuery(char queryLine[], STORAGECXT_t *store){
-    (void) store;
-
-    // printf("enter");
-
+//parses a query command (one line), and routes it to the corresponding storage engine methods
+int parseRouteQuery(char queryLine[], node* root){
     if(strlen(queryLine) <= 0){
        perror("parseQuery: queryLine length is empty or malspecified.");
        return -1; 
@@ -31,7 +21,6 @@ int parseRouteQuery(char queryLine[], STORAGECXT_t *store){
         perror("parseQuery: queryLine may be missing additional arguments.");
         return -1;
     }
-
     KEY_t key, lowKey, highKey;
     VAL_t val;
 
@@ -40,15 +29,20 @@ int parseRouteQuery(char queryLine[], STORAGECXT_t *store){
     // parse it into an array of keys and array of values, and a total length
     // pass those as args to a load function
     char *loadPath = NULL;
-    (void) loadPath;
+    (void) loadPath;	
 
     if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
         // route a point query
         // TODO: hook this into your storage engine's put. b+tree's insert.
+        if(find(root, key) != 0)
+    		root=insert(root, key, val);
+	    else
+    		update(root, key, val);
         printf(PUT_PATTERN, key, val); // Stubbed print for now
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
         // TODO: hook this into your storage engine's get. b+tree's find.
+        key=find(root, key);
         printf(GET_PATTERN, key); // Stubbed print for now
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
@@ -85,16 +79,23 @@ int main(int argc, char *argv[])
 				queriesSourcedFromFile = 1;
 
                 FILE *fp = fopen(optarg, "r");
-
+                
+                //initialize tree
+                node * root = emptytree();	
+				//printf("Tree initalized!\n");
+				
                 while(fgets(fileReadBuffer, 1023, fp)){
-                    parseRouteQuery(fileReadBuffer, NULL);
+                    parseRouteQuery(fileReadBuffer, root);
                 }
 
                 fclose(fp);
 
-
                 break;
+            case 't':
+            	//TODO INSERT TESTS HERE
+            	break;
 		} 
+		
 	}
 
     // should there be any remaining arguments not parsed by the client, 
