@@ -34,12 +34,12 @@ valb: value b corresponds to key b in a leaf node, null in internal nodes
 
 Tree diagram:
 
-                             [ P1 | a | P2 | b | P3 ]
-                               |         |        |
-              ------------------         |        -------------------
-              |                          |                          |
-              v                          v                          v
-[ P1 | a | P2 | b | P3 ] --> [ P1 | a | P2 | b | P3 ] --> [ P1 | a | P2 | b | P3 ]
+                                 [ P1 | a | P2 | b | P3 ]
+                                   |         |        |
+                  ------------------         |        -------------------
+                  |                          |                          |
+                  v                          v                          v
+0 <- [ P1 | a | P2 | b | P3 ] <-> [ P1 | a | P2 | b | P3 ] <-> [ P1 | a | P2 | b | P3 ] -> 0
 
 Built in tests:
 1. Very little data: one piece of data is inserted
