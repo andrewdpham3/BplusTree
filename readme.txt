@@ -1,11 +1,20 @@
-B+Tree at a Glance
+B+Tree
 Andrew Pham anp6338@g.harvard.edu
 
-This is not the full documentation, this is an abstract of form and function.
- 
+Instructions:
+1. Generate a workload file
+   -Navigate into /workload-gen
+   -Generate a workload ex "./generator --puts 100000 --gets 1000  > workload.txt"
+2. Run the workload
+   -"make"
+   -"./main -f workload-gen/workload.txt"
+   -"make clean"
+3. Tests
+   -TODO
+
  Form:
 - This program is an implementation of a B+ Tree.
-- The tree has a fanout of exactly 3 at all times.
+- The tree has a fanout 3.
 Function:
 - Get will find a key and return its corresponding value
 - Put will insert a new key & value into the correct location if not found
@@ -32,7 +41,7 @@ Tree diagram:
               v                          v                          v
 [ P1 | a | P2 | b | P3 ] --> [ P1 | a | P2 | b | P3 ] --> [ P1 | a | P2 | b | P3 ]
 
-The following tests have been created:
+Built in tests:
 1. Very little data: one piece of data is inserted
 2. Insert left: a value is inserted taking spot a in a leaf
 3. Insert right: a value is inserted taking spot b in a leaf
@@ -41,8 +50,6 @@ The following tests have been created:
 6. Update
 7. Range
 8. 5 million: Insert the minimum 5 million data points
-
-TODO: running the tests
 
 Notes:
 This program may overflow the default maximum stack size in your system. Use command "ulimit -s unlimited" to bypass.
