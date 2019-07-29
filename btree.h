@@ -228,39 +228,52 @@ void emptytree(node* root){
 //INSERT
 void insert(node* n, int a, int v){
 	if(n->leaf && n->a==0){
-		printf("Inserting %i into a\n", a);
+		printf("n>a is %i inserting %i into a at %p\n", n->a, a, &n);
 		n->a=a;
 		n->vala=v;
 	}
 	else if(n->leaf && n->b==0){
-		printf("Inserting %i into b\n", a);		
+		printf("Inserting %i into b\n", a);
 		n->b=a;
 		n->valb=v;
 	}
-	if(n->leaf && n->a!=0 && n->b!=0){
-		//printf("shift!\n");
+	else if(n->leaf && n->a!=0 && n->b!=0){
+		printf("shift %i\n", a);
 		shift(n, a, v);
 		//trigger tree rebuild
 		node* current=first(n);
-		Array b;
-		initArray(&b, 1);
-		for (int i=0;i<countdnodes(current);i++){
-			insertArray(&b, current->a);
-			insertArray(&b, current->b);
+		printf("current a: %i\n", current->a);
+		Array ar;
+		initArray(&ar, 1);
+		while(current != 0){
+			insertArray(&ar, current->a);
+			insertArray(&ar, current->b);
 			current=current->p3;
 		}
-		newtree(n, &b, b.used);
+		
+		printf("print array\n");
+		for(size_t i=0;i<ar.used;i++)
+			printf("%i,",ar.array[i]);
+		printf("\n");
+		
+		newtree(n, &ar, ar.used);
 		//printf("New Tree Built!\n");
 	}
 	if(!n->leaf){
 		//printf("not leaf, digging\n");
-		if(a==0)
+		//if empty children
+		if(n->p1->a==0 || n->p1->b==0)
 			insert(n->p1,a,v);
+		else if(n->p2->a==0 || n->p2->b==0)
+			insert(n->p2,a,v);
+		else if(n->p3->a==0 || n->p3->b==0)
+			insert(n->p3,a,v);
+		//standard cases
 		else if(a < n->a)
 			insert(n->p1,a,v);
-		if(a >= n->a && a <= n->b)
+		else if(a >= n->a && a <= n->b)
 			insert(n->p2,a,v);
-		if(a>n->b)
+		else if(a>n->b)
 			insert(n->p3,a,v);
 	}
 }
