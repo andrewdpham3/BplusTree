@@ -34,8 +34,8 @@ int parseRouteQuery(char queryLine[], node* root){
     if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
         // route a point query
         // TODO: hook this into your storage engine's put. b+tree's insert.
-        if(find(root, key) != 0)
-    		root=insert(root, key, val);
+        if(find(root, key) == 0)
+    		insert(root, key, val);
 	    else
     		update(root, key, val);
         printf(PUT_PATTERN, key, val); // Stubbed print for now
@@ -58,22 +58,14 @@ int parseRouteQuery(char queryLine[], node* root){
     return 0;
 }
 
-int main(int argc, char *argv[]) 
-{ 
+int main(int argc, char *argv[]) { 
 	int opt; 
-
-    // initial command line argument parsing
-
     int queriesSourcedFromFile = 0;
-	
-
     char fileReadBuffer[1023];
 
 	// parse any filepath option for queries input file
-	while((opt = getopt(argc, argv, ":if:lrx")) != -1) 
-	{ 
-		switch(opt) 
-		{ 
+	while((opt = getopt(argc, argv, ":if:lrx")) != -1){ 
+		switch(opt) { 
 			case 'f': 
 				printf("filepath: %s\n", optarg); 
 				queriesSourcedFromFile = 1;
@@ -81,8 +73,8 @@ int main(int argc, char *argv[])
                 FILE *fp = fopen(optarg, "r");
                 
                 //initialize tree
-                node * root = emptytree();	
-				//printf("Tree initalized!\n");
+				node * root=newnode();
+                emptytree(root);
 				
                 while(fgets(fileReadBuffer, 1023, fp)){
                     parseRouteQuery(fileReadBuffer, root);
@@ -90,12 +82,21 @@ int main(int argc, char *argv[])
 
                 fclose(fp);
 
+				//print
+				printf("print\n");
+				node* current=first(root);
+				for(int i=0;i<2;i++){
+					printf("%i,", current->a);
+					printf("%i|", current->b);
+					current=current->p3;
+				}
+				printf("\n");			
+
                 break;
             case 't':
             	//TODO INSERT TESTS HERE
             	break;
 		} 
-		
 	}
 
     // should there be any remaining arguments not parsed by the client, 
