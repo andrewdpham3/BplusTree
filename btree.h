@@ -73,7 +73,7 @@ void addchildren(node* n){
 void addlevel(node* n){
 	node* next=n->p3;
 	addchildren(n);
-	printf("Children created for %p\n", n);
+	//printf("Children created for %p\n", n);
 	if(next!=0){
 		addlevel(next);
 		//link in order traversals
@@ -201,18 +201,18 @@ void newtree(node * root, Array * data ,int size){
 		i++;
 		f=f->p3;
 	}
-	printf("Data assigned to leafs\n");
+	//printf("Data assigned to leafs\n");
 	//now give values to the tree...
 	buildtree(root);
 }
 
 //emptytree creates an empty tree with root and 3 children
 void emptytree(node* root){
-	printf("Initializing tree...\n");
+	//printf("Initializing tree...\n");
 	root->a=0;
 	root->b=0;
 	addlevel(root);
-	printf("Children added!\n");
+	//printf("Children added!\n");
 	
 	//assign the data to the leafs
 	node* f=root->p1;
@@ -238,7 +238,7 @@ void insert(node* n, int a, int v){
 		n->valb=v;
 	}
 	if(n->leaf && n->a!=0 && n->b!=0){
-		printf("shift!\n");
+		//printf("shift!\n");
 		shift(n, a, v);
 		//trigger tree rebuild
 		node* current=first(n);
@@ -250,11 +250,13 @@ void insert(node* n, int a, int v){
 			current=current->p3;
 		}
 		newtree(n, &b, b.used);
-		printf("New Tree Built!\n");
+		//printf("New Tree Built!\n");
 	}
 	if(!n->leaf){
 		//printf("not leaf, digging\n");
-		if(a < n->a)
+		if(a==0)
+			insert(n->p1,a,v);
+		else if(a < n->a)
 			insert(n->p1,a,v);
 		if(a >= n->a && a <= n->b)
 			insert(n->p2,a,v);
