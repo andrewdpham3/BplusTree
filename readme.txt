@@ -9,6 +9,7 @@ This is not the full documentation, this is an abstract of form and function.
 Function:
 - An insert on a full leaf node will use the in order pointers to shift numbers over.
 - A data shift will activate a rebuild of the tree's internal nodes.
+- The tree will automatically rebuild with the minimum required depth to hold the data.
 - Get will find a key and return its corresponding value
 - Put will insert a new key & value into the corrent location if not found
 - Put will update a value if its key is found
