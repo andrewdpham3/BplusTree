@@ -4,6 +4,7 @@ Andrew Pham anp6338@g.harvard.edu
 Instructions:
 1. Generate a workload file
    -Navigate into /workload-gen
+   -"make"
    -Generate a workload ex "./generator --puts 100000 --gets 1000  > workload.txt"
 2. Run the workload
    -"make"
