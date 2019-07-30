@@ -151,8 +151,9 @@ void shift(node* n, int a, int v){
 		nn->b=0;
 		nn->p3=0;
 		nn->p1=n;
+		//printf("%p's p3 set as %p\n",n,nn);
 		n->p3=nn;
-		printf("nn created with %i\n", nn->a);
+		//printf("%p created with %i\n",nn, nn->a);
 	}
 }
 
@@ -195,7 +196,7 @@ void newtree(node * root, Array * data ,int size){
 	
 	//assign the data to the leafs
 	first(f);
-	for(int i=0;i<6;){
+	for(int i=0;i<size;){
 		//printf("Assigning %i to %p\n", data->array[i], f);
 		f->a=data->array[i];
 		i++;
@@ -205,7 +206,7 @@ void newtree(node * root, Array * data ,int size){
 		f=f->p3;
 	}
 	
-	//printf("Data assigned to leafs\n");
+	printf("Data assigned to leafs\n");
 	//now give values to the tree...
 	buildtree(root);
 }
