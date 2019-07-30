@@ -94,8 +94,8 @@ void buildtree(node* n){
 		buildtree(n->p1);
 		buildtree(n->p2);
 		buildtree(n->p3);
-		n->a = n->p1->b+1;
-		n->b = n->p3->a-1;
+		n->a = n->p1->b;
+		n->b = n->p3->a;
 	}
 }
 
@@ -108,11 +108,11 @@ int find(node* n, int a){
 	if(n->leaf)
 		return 0;
 	if(!n->leaf){
-		if(a < n->a)
+		if(a <= n->a)
 			return find(n->p1,a);
-		if(a>n->a && a<n->b)
+		if(a > n->a && a < n->b)
 			return find(n->p2,a);
-		if(a>n->b)
+		if(a >= n->b)
 			return find(n->p3,a);
 	}
 	return 0;
@@ -122,8 +122,12 @@ int find(node* n, int a){
 void shift(node* n, int a, int v){
 	int temp=a;
 	int tempv=v;
+	if(n->a==0){
+		n->a=a;
+		n->vala=v;
+	}
 	//insert into a
-	if(a <= n->a){
+	else if(a <= n->a){
 		temp=n->b;
 		n->b=n->a;
 		n->a=a;
@@ -145,6 +149,7 @@ void shift(node* n, int a, int v){
 	
 	//create new node at end if necessary
 	if(n->p3 == 0){
+		if(a==12)printf("its in nn\n");
 		node* nn= newnode();
 		nn->a=temp;
 		nn->vala=v;
@@ -213,10 +218,10 @@ void newtree(node * root, Array * data ,int size){
 
 //INSERT
 void insert(node* n, int a, int v){
-	//printf("insert called with %p\n", n);
+	//printf("insert called with %i\n", a);
 	if(n->leaf && n->b==0){
 		n->b=a;
-		//printf("%i inserted into a\n",a);
+		//printf("%i inserted into empty b\n",a);
 	}
 	else if(n->leaf && n->b!=0){
 		shift(n, a, v);
@@ -224,12 +229,18 @@ void insert(node* n, int a, int v){
 	}
 	if(!n->leaf){
 			//printf("not leaf, digging\n");
-			if(a < n->a)
+			if(a <= n->a || (n->a==0 && n->b==0)){
+				printf("%i < %i going left\n", a, n->a);
 				insert(n->p1,a,v);
-			if(a >= n->a && a <= n->b)
+			}
+			else if((a > n->a && a < n->b) || (a > n->a && n->b == 0)){
+				printf("%i between %i and %i going middle\n", a,n->a,n->b);
 				insert(n->p2,a,v);
-			if(a>n->b)
+			}
+			else if(a >= n->b){
+				printf("%i > %i going right %i\n", a,n->b,n->a);
 				insert(n->p3,a,v);
+			}
 	}
 }
 
