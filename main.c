@@ -44,13 +44,18 @@ int parseRouteQuery(char queryLine[], node* root){
 			Array keys;
 			initArray(&keys, 5);
 			while(true){
-				//printf("insertarray %i\n", current->a);
+				printf("insertarray %i\n", current->a);
 				insertArray(&keys, current->a);
-				//printf("insertarray %i\n", current->b);
+				printf("insertarray %i\n", current->b);
 				insertArray(&keys, current->b);
 				current=current->p3;
-				if(current->a==0 || current->b==0 || current->p3==0)
+				//printf("%p\n",current->p3);
+				if(current->a==0 || current->b==0 || current->p3==0){
+					//printf("last node is %p\n", current);
+					printf("insertarray %i\n", current->a);
+					insertArray(&keys, current->a);
 					break;
+				}
 			}
 			printf("We need %li spots\n", keys.used);	
 
@@ -73,6 +78,7 @@ int parseRouteQuery(char queryLine[], node* root){
 		
 		    		
         printf(PUT_PATTERN, key, val); // Stubbed print for now
+        printf("\n");
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
         // TODO: hook this into your storage engine's get. b+tree's find.
