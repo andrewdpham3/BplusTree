@@ -42,17 +42,17 @@ int parseRouteQuery(char queryLine[], node* root){
     		//trigger rebuild
     		node* current=first(root);
 			Array keys;
-			initArray(&keys, 5);
+			initArray(&keys, 1);
+			printf("insertarray: ");
 			while(true){
-				printf("insertarray %i\n", current->a);
+				printf("%i,", current->a);
 				insertArray(&keys, current->a);
-				printf("insertarray %i\n", current->b);
+				printf("%i,", current->b);
 				insertArray(&keys, current->b);
 				current=current->p3;
-				//printf("%p\n",current->p3);
 				if(current->a==0 || current->b==0 || current->p3==0){
 					//printf("last node is %p\n", current);
-					printf("insertarray %i\n", current->a);
+					printf("%i\n", current->a);
 					insertArray(&keys, current->a);
 					break;
 				}
@@ -67,6 +67,11 @@ int parseRouteQuery(char queryLine[], node* root){
     	//print
  		//printf("checker: \n");
  		//printf("root: %p\n", root);
+ 		printf("                %i,%i\n", root->a, root->b);
+ 		printf("    %i,%i ", root->p1->a, root->p1->b);
+ 		printf("        %i,%i ", root->p2->a, root->p2->b);
+ 		printf("        %i,%i\n",root->p3->a, root->p3->b);
+ 		
 		node* current=first(root);
 		while(current!=0){
 			//printf("(%p)",current);
