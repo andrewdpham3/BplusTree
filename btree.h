@@ -26,17 +26,15 @@ node* newnode(){
 //first and last follows pointers till end
 node* first(node* n){
 	if(n->p1!=0)
-		first(n->p1);
+		return first(n->p1);
 	else
 		return n;
-	return n;
 }
 node* last(node* n){
 	if(n->p3!=0)
-		last(n->p3);
+		return last(n->p3);
 	else
 		return n;
-	return n;
 }
 
 //addchildren adds a full set of children to a node
@@ -44,7 +42,7 @@ void addchildren(node* n){
 	node* n1=newnode();
 	node* n2=newnode();
 	node* n3=newnode();
-	//initialize all values to zero
+	//initialize all keys to zero
 	n1->a=0;
 	n1->b=0;
 	n2->a=0;
@@ -111,11 +109,11 @@ int find(node* n, int a){
 		return 0;
 	if(!n->leaf){
 		if(a < n->a)
-			find(n->p1,a);
+			return find(n->p1,a);
 		if(a>n->a && a<n->b)
-			find(n->p2,a);
+			return find(n->p2,a);
 		if(a>n->b)
-			find(n->p3,a);
+			return find(n->p3,a);
 	}
 	return 0;
 }
@@ -123,12 +121,13 @@ int find(node* n, int a){
 //shift moves data during an insert
 void shift(node* n, int a, int v){
 	int temp=a;
+	int tempv=v;
 	//insert into a
 	if(a <= n->a){
 		temp=n->b;
 		n->b=n->a;
 		n->a=a;
-		temp=n->valb;
+		tempv=n->valb;
 		n->valb=n->vala;
 		n->vala=v;
 	}
@@ -136,13 +135,13 @@ void shift(node* n, int a, int v){
 	if(a > n->a && a < n->b){
 		temp=n->b;
 		n->b=a;
-		temp=n->valb;
+		tempv=n->valb;
 		n->valb=n->vala;
 	}
 	
 	//shift into next node
 	if(n->p3 != 0)
-		shift(n->p3,temp,v);
+		shift(n->p3,temp,tempv);
 	
 	//create new node at end if necessary
 	if(n->p3 == 0){
@@ -153,6 +152,7 @@ void shift(node* n, int a, int v){
 		nn->p3=0;
 		nn->p1=n;
 		n->p3=nn;
+		printf("nn created with %i\n", nn->a);
 	}
 }
 
@@ -175,106 +175,60 @@ void insertArray(Array *a, int element) {
     a->array[a->used++] = element;
 }
 
-//tree initializer with bulk data
+//tree initializer
 void newtree(node * root, Array * data ,int size){
-	printf("Initializing tree...\n");
+	//printf("Initializing tree...\n");
 	root->a=0;
 	root->b=0;
 	root->p1=0;
 	root->p3=0;
+	//printf("Newtree called with %p\n", root);
 	node* f=root;
 	int dataspots=2;
 	while(dataspots<size){
 		addlevel(f);
-		printf("Add a level\n");
-		f=first(f->p1);
+		//printf("Add a level\n");
+		f=f->p1;
 		dataspots=countdnodes(f)*2;
 		printf("We now have %i dataspots\n", dataspots);
 	}
 	
 	//assign the data to the leafs
-	f=first(root);
-	for(int i=0;i<size;){
+	first(f);
+	for(int i=0;i<6;){
+		//printf("Assigning %i to %p\n", data->array[i], f);
 		f->a=data->array[i];
 		i++;
+		//printf("Assigning %i to %p\n", data->array[i], f);
 		f->b=data->array[i];
 		i++;
 		f=f->p3;
 	}
+	
 	//printf("Data assigned to leafs\n");
 	//now give values to the tree...
 	buildtree(root);
 }
 
-//emptytree creates an empty tree with root and 3 children
-void emptytree(node* root){
-	//printf("Initializing tree...\n");
-	root->a=0;
-	root->b=0;
-	addlevel(root);
-	//printf("Children added!\n");
-	
-	//assign the data to the leafs
-	node* f=root->p1;
-	for(int i=0;i<6;){
-		f->a=0;
-		i++;
-		f->b=0;
-		i++;
-		f=f->p3;
-	}
-}
-
 //INSERT
 void insert(node* n, int a, int v){
-	if(n->leaf && n->a==0){
-		printf("n>a is %i inserting %i into a at %p\n", n->a, a, &n);
-		n->a=a;
-		n->vala=v;
-	}
-	else if(n->leaf && n->b==0){
-		printf("Inserting %i into b\n", a);
+	//printf("insert called with %p\n", n);
+	if(n->leaf && n->b==0){
 		n->b=a;
-		n->valb=v;
+		//printf("%i inserted into a\n",a);
 	}
-	else if(n->leaf && n->a!=0 && n->b!=0){
-		printf("shift %i\n", a);
+	else if(n->leaf && n->b!=0){
 		shift(n, a, v);
-		//trigger tree rebuild
-		node* current=first(n);
-		printf("current a: %i\n", current->a);
-		Array ar;
-		initArray(&ar, 1);
-		while(current != 0){
-			insertArray(&ar, current->a);
-			insertArray(&ar, current->b);
-			current=current->p3;
-		}
-		
-		printf("print array\n");
-		for(size_t i=0;i<ar.used;i++)
-			printf("%i,",ar.array[i]);
-		printf("\n");
-		
-		newtree(n, &ar, ar.used);
-		//printf("New Tree Built!\n");
+		//printf("%i inserted into b, shift called\n",a);
 	}
 	if(!n->leaf){
-		//printf("not leaf, digging\n");
-		//if empty children
-		if(n->p1->a==0 || n->p1->b==0)
-			insert(n->p1,a,v);
-		else if(n->p2->a==0 || n->p2->b==0)
-			insert(n->p2,a,v);
-		else if(n->p3->a==0 || n->p3->b==0)
-			insert(n->p3,a,v);
-		//standard cases
-		else if(a < n->a)
-			insert(n->p1,a,v);
-		else if(a >= n->a && a <= n->b)
-			insert(n->p2,a,v);
-		else if(a>n->b)
-			insert(n->p3,a,v);
+			//printf("not leaf, digging\n");
+			if(a < n->a)
+				insert(n->p1,a,v);
+			if(a >= n->a && a <= n->b)
+				insert(n->p2,a,v);
+			if(a>n->b)
+				insert(n->p3,a,v);
 	}
 }
 
@@ -285,7 +239,6 @@ void update(node* n, int a, int v){
 	else if(n->leaf && n->b==a)
 		n->valb=v;
 	if(!n->leaf){
-		//printf("not leaf, digging\n");
 		if(a < n->a)
 			update(n->p1,a,v);
 		if(a >= n->a && a <= n->b)
