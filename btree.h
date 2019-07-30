@@ -101,19 +101,35 @@ void buildtree(node* n){
 
 //FIND
 int find(node* n, int a){
-	if(n->leaf && n->a==a)
+	if(n->leaf && n->a==a){
+		printf("Found in a\n");
 		return n->vala;
-	if(n->leaf && n->b==a)
+	}
+	else if(n->leaf && n->b==a){
+		printf("Found in b\n");
 		return n->valb;
-	if(n->leaf)
+		}
+	else if(n->leaf){
+		//printf("In Order %i %i\n", a, n->b);
+		if(n->p1 != 0 && n->p1->b >= a)
+			return find(n->p1, a);
+		if(n->p3 != 0 && n->p3->a <= a)
+			return find(n->p3, a);
 		return 0;
+		}
 	if(!n->leaf){
-		if(a <= n->a)
+		if(a <= n->a){
+			//printf("%i <= %i going left\n",a, n->a);
 			return find(n->p1,a);
-		if(a > n->a && a < n->b)
+		}
+		if(a > n->a && a < n->b){
+			//printf("%i between %i and %i going mid\n",a, n->a, n->b);
 			return find(n->p2,a);
-		if(a >= n->b)
+		}
+		if(a >= n->b){
+			//printf("%i >= %i going right\n",a, n->b);
 			return find(n->p3,a);
+		}
 	}
 	return 0;
 }
@@ -182,7 +198,7 @@ void insertArray(Array *a, int element) {
 }
 
 //tree initializer
-void newtree(node * root, Array * data ,int size){
+void newtree(node * root, Array * data, int size, Array * vals){
 	//printf("Initializing tree...\n");
 	root->a=0;
 	root->b=0;
@@ -204,9 +220,11 @@ void newtree(node * root, Array * data ,int size){
 	for(int i=0;i<size;){
 		//printf("Assigning %i to %p\n", data->array[i], f);
 		f->a=data->array[i];
+		f->vala=vals->array[i];
 		i++;
 		//printf("Assigning %i to %p\n", data->array[i], f);
 		f->b=data->array[i];
+		f->valb=vals->array[i];
 		i++;
 		f=f->p3;
 	}
