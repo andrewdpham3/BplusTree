@@ -196,7 +196,7 @@ void newtree(node * root, Array * data ,int size){
 		//printf("Add a level\n");
 		f=f->p1;
 		dataspots=countdnodes(f)*2;
-		printf("We now have %i dataspots\n", dataspots);
+		//printf("We now have %i dataspots\n", dataspots);
 	}
 	
 	//assign the data to the leafs
@@ -211,7 +211,7 @@ void newtree(node * root, Array * data ,int size){
 		f=f->p3;
 	}
 	
-	printf("Data assigned to leafs\n");
+	//printf("Data assigned to leafs\n");
 	//now give values to the tree...
 	buildtree(root);
 }
@@ -219,8 +219,14 @@ void newtree(node * root, Array * data ,int size){
 //INSERT
 void insert(node* n, int a, int v){
 	//printf("insert called with %i\n", a);
-	if(n->leaf && n->b==0){
+	if(n->leaf && n->a==0){
+		n->a=a;
+		n->vala=v;
+		//printf("%i inserted into empty b\n",a);
+	}
+	else if(n->leaf && n->b==0){
 		n->b=a;
+		n->valb=v;
 		//printf("%i inserted into empty b\n",a);
 	}
 	else if(n->leaf && n->b!=0){
@@ -230,15 +236,15 @@ void insert(node* n, int a, int v){
 	if(!n->leaf){
 			//printf("not leaf, digging\n");
 			if(a <= n->a || (n->a==0 && n->b==0)){
-				printf("%i < %i going left\n", a, n->a);
+				//printf("%i < %i going left\n", a, n->a);
 				insert(n->p1,a,v);
 			}
 			else if((a > n->a && a < n->b) || (a > n->a && n->b == 0)){
-				printf("%i between %i and %i going middle\n", a,n->a,n->b);
+				//printf("%i between %i and %i going middle\n", a,n->a,n->b);
 				insert(n->p2,a,v);
 			}
 			else if(a >= n->b){
-				printf("%i > %i going right %i\n", a,n->b,n->a);
+				//printf("%i > %i going right\n", a,n->b);
 				insert(n->p3,a,v);
 			}
 	}
