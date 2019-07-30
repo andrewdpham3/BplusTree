@@ -41,28 +41,33 @@ int parseRouteQuery(char queryLine[], node* root){
         	//printf("Main has %p\n", root);
     		insert(root, key, val);
     		
-    		//trigger rebuild
+    		//trigger treebuild
     		node* current=first(root);
 			Array keys;
+			Array values;
 			initArray(&keys, 1);
-			//printf("insertarray: ");
+			initArray(&values, 1);
 			while(true){
 				//printf("%i,", current->a);
 				insertArray(&keys, current->a);
+				insertArray(&values, current->vala);
 				//printf("%i,", current->b);
 				insertArray(&keys, current->b);
+				insertArray(&values, current->valb);
 				current=current->p3;
 				if(current->a==0 || current->b==0 || current->p3==0){
 					//printf("%i\n", current->a);
 					insertArray(&keys, current->a);
+					insertArray(&values, current->vala);
 					//printf("%i\n", current->b);
 					insertArray(&keys, current->b);
+					insertArray(&values, current->valb);
 					break;
 				}
 			}
 			//printf("We need %li spots\n", keys.used);	
 
-			newtree(root, &keys, keys.used);
+			newtree(root, &keys, keys.used, &values);
     	}
 	    else
     		update(root, key, val);
@@ -84,11 +89,13 @@ int parseRouteQuery(char queryLine[], node* root){
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
         // TODO: hook this into your storage engine's get. b+tree's find.
-        key=find(root, key);
-        printf(GET_PATTERN, key); // Stubbed print for now
+        printf("\n");
+        printf(GET_PATTERN, key);
+        int val=find(root, key);
+        printf("Got: %i\n", val);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
-        // NOTE: implement this for graduate credit 
+        // NOTE: implement this for graduate credit
         printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
     }else {
         // query not parsed. handle the query as unknown
@@ -116,35 +123,21 @@ int main(int argc, char *argv[]) {
                 
                 //initialize tree
                 node * root=newnode();
-                
-                //initial data
                 node* current=root;
-                Array initdata;
+                Array initdata, initvals;
 				initArray(&initdata, 6);
+				initArray(&initvals, 6);
 				for (int i=1;i<7;){
 					insertArray(&initdata, 0);
+					insertArray(&initvals, 0);
 					i++;
 					insertArray(&initdata, 0);
+					insertArray(&initvals, 0);
 					i++;
 					current=current->p3;
-				}
+				}				
+                newtree(root, &initdata, 6, &initvals);
 				
-                newtree(root, &initdata, 6);
-				
-				//print
-				
-				printf("Initial Tree: ");
-				current=root->p1;
-					printf("%i,", current->a);
-					printf("%i|", current->b);
-					current=current->p3;
-					printf("%i,", current->a);
-					printf("%i|", current->b);
-					current=current->p3;
-					printf("%i,", current->a);
-					printf("%i|", current->b);
-					current=current->p3;
-				printf("\n");
 				
                 while(fgets(fileReadBuffer, 1023, fp)){
                     parseRouteQuery(fileReadBuffer, root);
