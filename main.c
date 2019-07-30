@@ -72,7 +72,7 @@ int parseRouteQuery(char queryLine[], node* root){
 	    else
     		update(root, key, val);
     	
-    	//treeprinter	
+    	/*treeprinter	
  		printf("                %i,%i\n", root->a, root->b);
  		printf("    %i,%i ", root->p1->a, root->p1->b);
  		printf("        %i,%i ", root->p2->a, root->p2->b);
@@ -86,10 +86,11 @@ int parseRouteQuery(char queryLine[], node* root){
 			current=current->p3;
 		}
         printf("\n");
+        */
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
         // TODO: hook this into your storage engine's get. b+tree's find.
-        printf("\n");
+        //printf("\n");
         printf(GET_PATTERN, key);
         int val=find(root, key);
         printf("Got: %i\n", val);
