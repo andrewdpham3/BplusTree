@@ -212,7 +212,7 @@ void newtree(node * root, Array * data, int size, Array * vals){
 		//printf("Add a level\n");
 		f=f->p1;
 		dataspots=countdnodes(f)*2;
-		//printf("We now have %i dataspots\n", dataspots);
+		printf("We now have %i dataspots\n", dataspots);
 	}
 	
 	//assign the data to the leafs
@@ -270,7 +270,7 @@ void insert(node* n, int a, int v){
 
 //UPDATE value
 void update(node* n, int a, int v){
-	printf("update!\n");
+	//printf("update!\n");
 	if(n->leaf && n->a==a)
 		n->vala=v;
 	else if(n->leaf && n->b==a)
@@ -301,5 +301,9 @@ Can you describe a generic cost expression for Scan, measured in number of rando
 
 // TODO GRADUATE: here you will need to define RANGE for finding qualifying keys and values that fall in a key range.
 
+//void range(node* n, int h, int l){
+	//find low key
+	//in order traverse to high key
+//}
 
 #endif
