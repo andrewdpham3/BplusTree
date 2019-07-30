@@ -35,6 +35,8 @@ int parseRouteQuery(char queryLine[], node* root){
         // route a point query
         // TODO: hook this into your storage engine's put. b+tree's insert.
         //printf("find %i\n",find(root, key));
+        printf(PUT_PATTERN, key, val);
+        
         if(find(root, key) == 0){
         	//printf("Main has %p\n", root);
     		insert(root, key, val);
@@ -43,30 +45,29 @@ int parseRouteQuery(char queryLine[], node* root){
     		node* current=first(root);
 			Array keys;
 			initArray(&keys, 1);
-			printf("insertarray: ");
+			//printf("insertarray: ");
 			while(true){
-				printf("%i,", current->a);
+				//printf("%i,", current->a);
 				insertArray(&keys, current->a);
-				printf("%i,", current->b);
+				//printf("%i,", current->b);
 				insertArray(&keys, current->b);
 				current=current->p3;
 				if(current->a==0 || current->b==0 || current->p3==0){
-					//printf("last node is %p\n", current);
-					printf("%i\n", current->a);
+					//printf("%i\n", current->a);
 					insertArray(&keys, current->a);
+					//printf("%i\n", current->b);
+					insertArray(&keys, current->b);
 					break;
 				}
 			}
-			printf("We need %li spots\n", keys.used);	
+			//printf("We need %li spots\n", keys.used);	
 
 			newtree(root, &keys, keys.used);
     	}
 	    else
     		update(root, key, val);
-    		
-    	//print
- 		//printf("checker: \n");
- 		//printf("root: %p\n", root);
+    	
+    	//treeprinter	
  		printf("                %i,%i\n", root->a, root->b);
  		printf("    %i,%i ", root->p1->a, root->p1->b);
  		printf("        %i,%i ", root->p2->a, root->p2->b);
@@ -79,10 +80,6 @@ int parseRouteQuery(char queryLine[], node* root){
 			printf("%i|", current->b);
 			current=current->p3;
 		}
-		printf("\n");
-		
-		    		
-        printf(PUT_PATTERN, key, val); // Stubbed print for now
         printf("\n");
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
@@ -125,9 +122,9 @@ int main(int argc, char *argv[]) {
                 Array initdata;
 				initArray(&initdata, 6);
 				for (int i=1;i<7;){
-					insertArray(&initdata, i*2);
+					insertArray(&initdata, 0);
 					i++;
-					insertArray(&initdata, i*2);
+					insertArray(&initdata, 0);
 					i++;
 					current=current->p3;
 				}
@@ -135,6 +132,8 @@ int main(int argc, char *argv[]) {
                 newtree(root, &initdata, 6);
 				
 				//print
+				
+				printf("Initial Tree: ");
 				current=root->p1;
 					printf("%i,", current->a);
 					printf("%i|", current->b);
@@ -145,7 +144,7 @@ int main(int argc, char *argv[]) {
 					printf("%i,", current->a);
 					printf("%i|", current->b);
 					current=current->p3;
-				printf("Tree Made!\n");
+				printf("\n");
 				
                 while(fgets(fileReadBuffer, 1023, fp)){
                     parseRouteQuery(fileReadBuffer, root);
