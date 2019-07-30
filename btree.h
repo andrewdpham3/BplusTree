@@ -102,11 +102,11 @@ void buildtree(node* n){
 //FIND
 int find(node* n, int a){
 	if(n->leaf && n->a==a){
-		printf("Found in a\n");
+		//printf("Found in a\n");
 		return n->vala;
 	}
 	else if(n->leaf && n->b==a){
-		printf("Found in b\n");
+		//printf("Found in b\n");
 		return n->valb;
 		}
 	else if(n->leaf){
@@ -270,10 +270,17 @@ void insert(node* n, int a, int v){
 
 //UPDATE value
 void update(node* n, int a, int v){
+	printf("update!\n");
 	if(n->leaf && n->a==a)
 		n->vala=v;
 	else if(n->leaf && n->b==a)
 		n->valb=v;
+	else if(n->leaf){
+		if(n->p1 != 0 && n->p1->b >= a)
+			update(n->p1, a, v);
+		if(n->p3 != 0 && n->p3->a <= a)
+			update(n->p3, a, v);
+	}
 	if(!n->leaf){
 		if(a < n->a)
 			update(n->p1,a,v);
