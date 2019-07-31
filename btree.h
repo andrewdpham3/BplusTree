@@ -118,11 +118,11 @@ int find(node* n, int a){
 		return 0;
 		}
 	if(!n->leaf){
-		if(a <= n->a){
+		if(a <= n->a ){
 			//printf("%i <= %i going left\n",a, n->a);
 			return find(n->p1,a);
 		}
-		if(a > n->a && a < n->b){
+		if((a > n->a && a < n->b)  || (a > n->a && n->b == 0)){
 			//printf("%i between %i and %i going mid\n",a, n->a, n->b);
 			return find(n->p2,a);
 		}
@@ -233,6 +233,41 @@ void newtree(node * root, Array * data, int size, Array * vals){
 	//now give values to the tree...
 	buildtree(root);
 }
+void newtreeverbose(node * root, Array * data, int size, Array * vals){
+	//printf("Initializing tree...\n");
+	root->a=0;
+	root->b=0;
+	root->p1=0;
+	root->p3=0;
+	//printf("Newtree called with %p\n", root);
+	node* f=root;
+	int dataspots=2;
+	while(dataspots<size){
+		addlevel(f);
+		//printf("Add a level\n");
+		f=f->p1;
+		dataspots=countdnodes(f)*2;
+		printf("We now have %i dataspots\n", dataspots);
+	}
+	
+	//assign the data to the leafs
+	first(f);
+	for(int i=0;i<size;){
+		//printf("Assigning %i to %p\n", data->array[i], f);
+		f->a=data->array[i];
+		f->vala=vals->array[i];
+		i++;
+		//printf("Assigning %i to %p\n", data->array[i], f);
+		f->b=data->array[i];
+		f->valb=vals->array[i];
+		i++;
+		f=f->p3;
+	}
+	
+	//printf("Data assigned to leafs\n");
+	//now give values to the tree...
+	buildtree(root);
+}
 
 //INSERT
 void insert(node* n, int a, int v){
@@ -270,24 +305,38 @@ void insert(node* n, int a, int v){
 
 //UPDATE value
 void update(node* n, int a, int v){
-	//printf("update!\n");
-	if(n->leaf && n->a==a)
-		n->vala=v;
-	else if(n->leaf && n->b==a)
-		n->valb=v;
-	else if(n->leaf){
-		if(n->p1 != 0 && n->p1->b <= a)
-			update(n->p1, a, v);
-		if(n->p3 != 0 && n->p3->a >= a)
-			update(n->p3, a, v);
-	}
+	//if(a==5)printf("update called on 5!\n");
 	if(!n->leaf){
-		if(a < n->a)
+		if(a <= n->a || (n->a==0 && n->b==0)){
+			//if(a==1)printf("movin left!\n");
 			update(n->p1,a,v);
-		if(a >= n->a && a <= n->b)
+		}
+		if((a >= n->a && a <= n->b)  || (a > n->a && n->b == 0)){
+			//if(a==1)printf("movin middle\n");
 			update(n->p2,a,v);
-		if(a>n->b)
+		}
+		if(a>n->b){
+			//if(a==5)printf("movin right\n");
 			update(n->p3,a,v);
+		}
+	}	
+	if(n->leaf && n->a==a){
+		//printf("updated %i value\n", a);
+		n->vala=v;
+	}
+	else if(n->leaf && n->b==a){
+		//printf("updated %i value\n", a);
+		n->valb=v;
+	}
+	else if(n->leaf){
+		if(n->p1 != 0 && n->p1->b <= a){
+			//if(a==1)printf("in order left %i\n", n->p1->a);
+			update(n->p1, a, v);
+		}
+		if(n->p3 != 0 && n->p3->a >= a){
+			//if(a==1)printf("in order right %i\n", n->p3->a);
+			update(n->p3, a, v);
+		}
 	}
 }
 
@@ -301,9 +350,56 @@ Can you describe a generic cost expression for Scan, measured in number of rando
 
 // TODO GRADUATE: here you will need to define RANGE for finding qualifying keys and values that fall in a key range.
 
-//void range(node* n, int h, int l){
-	//find low key
-	//in order traverse to high key
-//}
+void range(node* n, int h, int l, Array* vals){
+	if(n->leaf && n->a==l){
+		//printf("Found in a\n");
+		node* current=n;
+		while(true){
+			insertArray(&vals, current->vala);
+			if(current->vala==h)
+				break;
+			insertArray(&vals, current->valb);
+			if(current->valb==h)
+				break;
+			current=current->p3;
+		}
+	}
+	else if(n->leaf && n->b==l){
+		//printf("Found in b\n");
+		node* current=n;
+		insertArray(&vals, current->valb);
+		current=current->p3;
+		while(true){
+			insertArray(&vals, current->vala);
+			if(current->vala==h)
+				break;
+			insertArray(&vals, current->valb);
+			if(current->valb==h)
+				break;
+			current=current->p3;
+		}
+	}
+	else if(n->leaf){
+		//printf("In Order %i %i\n", a, n->b);
+		if(n->p1 != 0 && n->p1->b <= l)
+			return range(n->p1, a);
+		if(n->p3 != 0 && n->p3->a >= l)
+			return range(n->p3, a);
+		}
+	if(!n->leaf){
+		if(a <= n->a ){
+			//printf("%i <= %i going left\n",a, n->a);
+			return range(n->p1,l);
+		}
+		if((l > n->a && l < n->b)  || (l > n->a && n->b == 0)){
+			//printf("%i between %i and %i going mid\n",a, n->a, n->b);
+			return range(n->p2,a);
+		}
+		if(l >= n->b){
+			//printf("%i >= %i going right\n",a, n->b);
+			return range(n->p3,a);
+		}
+	}
+}
 
 #endif
