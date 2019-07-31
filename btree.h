@@ -341,15 +341,15 @@ void update(node* n, int a, int v){
 }
 
 //RANGE 
-void range(node* n, int h, int l, Array* vals){
+void range(node* n, int h, int l, Array* keys){
 	if(n->leaf && n->a==l){
 		//printf("Found in a\n");
 		node* current=n;
 		while(true){
-			insertArray(vals, current->vala);
+			insertArray(keys, current->vala);
 			if(current->vala==h)
 				break;
-			insertArray(vals, current->valb);
+			insertArray(keys, current->valb);
 			if(current->valb==h)
 				break;
 			current=current->p3;
@@ -358,13 +358,13 @@ void range(node* n, int h, int l, Array* vals){
 	else if(n->leaf && n->b==l){
 		printf("Found in b\n");
 		node* current=n;
-		insertArray(vals, current->valb);
+		insertArray(keys, current->valb);
 		current=current->p3;
 		while(true){
-			insertArray(vals, current->vala);
+			insertArray(keys, current->vala);
 			if(current->vala==h)
 				break;
-			insertArray(vals, current->valb);
+			insertArray(keys, current->valb);
 			if(current->valb==h)
 				break;
 			current=current->p3;
@@ -373,22 +373,22 @@ void range(node* n, int h, int l, Array* vals){
 	else if(n->leaf){
 		//printf("In Order %i %i\n", a, n->b);
 		if(n->p1 != 0 && n->p1->b <= l)
-			return range(n->p1, h, l, vals);
+			return range(n->p1, h, l, keys);
 		if(n->p3 != 0 && n->p3->a >= l)
-			return range(n->p3, h, l, vals);
+			return range(n->p3, h, l, keys);
 		}
 	if(!n->leaf){
 		if(l <= n->a ){
 			//printf("%i <= %i going left\n",a, n->a);
-			return range(n->p1,h,l,vals);
+			return range(n->p1,h,l,keys);
 		}
 		if((l > n->a && l < n->b)  || (l > n->a && n->b == 0)){
 			//printf("%i between %i and %i going mid\n",a, n->a, n->b);
-			return range(n->p2,h,l,vals);
+			return range(n->p2,h,l,keys);
 		}
 		if(l >= n->b){
 			//printf("%i >= %i going right\n",a, n->b);
-			return range(n->p3,h,l,vals);
+			return range(n->p3,h,l,keys);
 		}
 	}
 }
