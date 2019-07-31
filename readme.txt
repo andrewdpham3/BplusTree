@@ -5,7 +5,6 @@ Instructions:
 1. "make"
 2. "./main -1" (replace 1 with the number of the test number you want to run)
    -"./main -f workload.txt" (replace workload.txt with location of custom workload)
-3. "make clean"
 
  Form:
 - This program is an implementation of a B+ Tree.
@@ -42,8 +41,8 @@ Tests will print out detailed descriptions, inputs, and outputs before execution
 2. Very Small (passing): few inserts, not enough to need more nodes
 3. Average (passing): insert enough to need a deeper tree, tree not full
 4. Update (passing): update a value
-5. Range (failing): TODO
-6. Larger Tree (passing): insert enough to require a deeper tree, twice
+5. Larger Tree (passing): insert enough to require a deeper tree, twice
+6. Range: TODO
 7. Negatives (failing): insert negative numbers
 8. Back to back (passing): insert sequential numbers
 9. Edges (passing): insert to the front and back of data set
