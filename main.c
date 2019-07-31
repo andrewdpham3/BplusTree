@@ -154,8 +154,8 @@ int parseRouteQuery1(char queryLine[], node* root){
  		//print
 		node* current=first(root);
 		while(current!=0){
-			printf("%i,", current->a);
-			printf("%i|", current->b);
+			printf("%i,", current->vala);
+			printf("%i|", current->valb);
 			current=current->p3;
 		}
         printf("\n");
@@ -167,8 +167,14 @@ int parseRouteQuery1(char queryLine[], node* root){
         printf("Got: %i\n", val);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
-        // NOTE: implement this for graduate credit
-        printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
+		printf(RANGE_PATTERN, lowKey, highKey);
+        Array rangear;
+		initArray(&rangear,1);
+		range(root, highKey, lowKey, &rangear);
+		printf("Vals in range: ");
+		for(size_t i=0;i<rangear.used;i++)
+			printf("%i,", rangear.array[i]);
+		printf("\n");
     }else {
         // query not parsed. handle the query as unknown
         return -1;
@@ -239,7 +245,6 @@ int parseRouteQuery2(char queryLine[], node* root){
         printf("Got: %i\n", val);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
-        // NOTE: implement this for graduate credit
         printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
     }else {
         // query not parsed. handle the query as unknown
@@ -299,7 +304,6 @@ int parseRouteQuery3(char queryLine[], node* root){
         printf("Got: %i\n", val);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
-        // NOTE: implement this for graduate credit
         printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
     }else {
         // query not parsed. handle the query as unknown
