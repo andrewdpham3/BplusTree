@@ -111,9 +111,9 @@ int find(node* n, int a){
 		}
 	else if(n->leaf){
 		//printf("In Order %i %i\n", a, n->b);
-		if(n->p1 != 0 && n->p1->b >= a)
+		if(n->p1 != 0 && n->p1->b <= a)
 			return find(n->p1, a);
-		if(n->p3 != 0 && n->p3->a <= a)
+		if(n->p3 != 0 && n->p3->a >= a)
 			return find(n->p3, a);
 		return 0;
 		}
@@ -212,7 +212,7 @@ void newtree(node * root, Array * data, int size, Array * vals){
 		//printf("Add a level\n");
 		f=f->p1;
 		dataspots=countdnodes(f)*2;
-		printf("We now have %i dataspots\n", dataspots);
+		//printf("We now have %i dataspots\n", dataspots);
 	}
 	
 	//assign the data to the leafs
@@ -276,9 +276,9 @@ void update(node* n, int a, int v){
 	else if(n->leaf && n->b==a)
 		n->valb=v;
 	else if(n->leaf){
-		if(n->p1 != 0 && n->p1->b >= a)
+		if(n->p1 != 0 && n->p1->b <= a)
 			update(n->p1, a, v);
-		if(n->p3 != 0 && n->p3->a <= a)
+		if(n->p3 != 0 && n->p3->a >= a)
 			update(n->p3, a, v);
 	}
 	if(!n->leaf){
