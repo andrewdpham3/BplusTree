@@ -108,48 +108,235 @@ int parseRouteQuery(char queryLine[], node* root){
     return 0;
 }
 
+//parse route query 1 prints data nodes
+int parseRouteQuery1(char queryLine[], node* root){
+    if(strlen(queryLine) <= 0){
+       perror("parseQuery: queryLine length is empty or malspecified.");
+       return -1; 
+    }else if(strlen(queryLine) < 2){
+        perror("parseQuery: queryLine may be missing additional arguments.");
+        return -1;
+    }
+    KEY_t key, lowKey, highKey;
+    VAL_t val;
+    char *loadPath = NULL;
+    (void) loadPath;	
+    if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
+        printf(PUT_PATTERN, key, val);        
+        if(find(root, key) == 0){
+    		insert(root, key, val);	
+    		//trigger treebuild
+    		node* current=first(root);
+			Array keys;
+			Array values;
+			initArray(&keys, 1);
+			initArray(&values, 1);
+			while(true){
+				insertArray(&keys, current->a);
+				insertArray(&values, current->vala);
+				insertArray(&keys, current->b);
+				insertArray(&values, current->valb);
+				current=current->p3;
+				if(current->a==0 || current->b==0 || current->p3==0){
+					insertArray(&keys, current->a);
+					insertArray(&values, current->vala);
+					insertArray(&keys, current->b);
+					insertArray(&values, current->valb);
+					break;
+				}
+			}
+			newtree(root, &keys, keys.used, &values);
+    	}else{
+    		printf("UPDATE!");
+    		update(root, key, val);
+    	}
+ 		
+ 		//print
+		node* current=first(root);
+		while(current!=0){
+			printf("%i,", current->a);
+			printf("%i|", current->b);
+			current=current->p3;
+		}
+        printf("\n");
+        
+    }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
+        // route a get query
+        printf(GET_PATTERN, key);
+        int val=find(root, key);
+        printf("Got: %i\n", val);
+    }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
+        // route a range query
+        // NOTE: implement this for graduate credit
+        printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
+    }else {
+        // query not parsed. handle the query as unknown
+        return -1;
+    }
+    return 0;
+}
+
+//parse route query 2 prints a depth 3 tree
+int parseRouteQuery2(char queryLine[], node* root){
+    if(strlen(queryLine) <= 0){
+       perror("parseQuery: queryLine length is empty or malspecified.");
+       return -1; 
+    }else if(strlen(queryLine) < 2){
+        perror("parseQuery: queryLine may be missing additional arguments.");
+        return -1;
+    }
+    KEY_t key, lowKey, highKey;
+    VAL_t val;
+    char *loadPath = NULL;
+    (void) loadPath;	
+    if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
+        printf("\n");
+        printf(PUT_PATTERN, key, val);        
+        if(find(root, key) == 0){
+    		insert(root, key, val);	
+    		//trigger treebuild
+    		node* current=first(root);
+			Array keys;
+			Array values;
+			initArray(&keys, 1);
+			initArray(&values, 1);
+			while(true){
+				insertArray(&keys, current->a);
+				insertArray(&values, current->vala);
+				insertArray(&keys, current->b);
+				insertArray(&values, current->valb);
+				current=current->p3;
+				if(current->a==0 || current->b==0 || current->p3==0){
+					insertArray(&keys, current->a);
+					insertArray(&values, current->vala);
+					insertArray(&keys, current->b);
+					insertArray(&values, current->valb);
+					break;
+				}
+			}
+			newtree(root, &keys, keys.used, &values);
+    	}else{
+    		update(root, key, val);
+    	}
+ 		//treeprinter	
+ 		printf("                             %i,%i\n", root->a, root->b);
+ 		printf("          %i,%i", root->p1->a, root->p1->b);
+ 		printf("               %i,%i", root->p2->a, root->p2->b);
+ 		printf("               %i,%i\n",root->p3->a, root->p3->b);	
+ 		printf("Data: ");
+		node* current=first(root);
+		while(current!=0){
+			printf("%i,", current->a);
+			printf("%i|", current->b);
+			current=current->p3;
+		}
+        printf("\n");
+        
+    }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
+        // route a get query
+        printf(GET_PATTERN, key);
+        int val=find(root, key);
+        printf("Got: %i\n", val);
+    }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
+        // route a range query
+        // NOTE: implement this for graduate credit
+        printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
+    }else {
+        // query not parsed. handle the query as unknown
+        return -1;
+    }
+    return 0;
+}
+
 int main(int argc, char *argv[]) { 
 	int opt; 
     int queriesSourcedFromFile = 0;
     char fileReadBuffer[1023];
-
+	//initialize tree
+    node * root=newnode();
+    node* current=root;
+    Array initdata, initvals;
+	initArray(&initdata, 6);
+	initArray(&initvals, 6);
+	for (int i=1;i<7;){
+		insertArray(&initdata, 0);
+		insertArray(&initvals, 0);
+		i++;
+		insertArray(&initdata, 0);
+		insertArray(&initvals, 0);
+		i++;
+		current=current->p3;
+	}				
+    newtree(root, &initdata, 6, &initvals);
+                
 	// parse any filepath option for queries input file
-	while((opt = getopt(argc, argv, ":if:lrx")) != -1){ 
+	while((opt = getopt(argc, argv, ":if:lrx123456789")) != -1){ 
 		switch(opt) { 
 			case 'f': 
 				printf("filepath: %s\n", optarg); 
 				queriesSourcedFromFile = 1;
-
-                FILE *fp = fopen(optarg, "r");
-                
-                //initialize tree
-                node * root=newnode();
-                node* current=root;
-                Array initdata, initvals;
-				initArray(&initdata, 6);
-				initArray(&initvals, 6);
-				for (int i=1;i<7;){
-					insertArray(&initdata, 0);
-					insertArray(&initvals, 0);
-					i++;
-					insertArray(&initdata, 0);
-					insertArray(&initvals, 0);
-					i++;
-					current=current->p3;
-				}				
-                newtree(root, &initdata, 6, &initvals);
-				
-				
+                FILE *fp = fopen(optarg, "r");                
                 while(fgets(fileReadBuffer, 1023, fp)){
                     parseRouteQuery(fileReadBuffer, root);
                 }
-
                 fclose(fp);		
-
                 break;
-            case 't':
-            	//TODO INSERT TESTS HERE
-            	break;
+                
+            case '1':
+            	printf("TEST 1: One\n");
+            	printf("Description: First insert into the tree.\n");
+            	printf("Input: p 5 5\n");
+            	printf("Expected Behavior: Prints tree with input left most\n");
+            	printf("Execution...\n\n");
+				queriesSourcedFromFile = 1;
+                FILE *f1 = fopen("workload-gen/test1.txt", "r");                
+                while(fgets(fileReadBuffer, 1023, f1)){
+                    parseRouteQuery1(fileReadBuffer, root);
+                }
+                fclose(f1);		
+                break;
+
+			case '2':
+            	printf("TEST 2: Very small\n");
+            	printf("Description: First inserts, does not need to grow.\n");
+            	printf("Input: 5 inserts, no duplicates\n");
+            	printf("Expected Behavior: Prints tree with inputs ordered\n");
+            	printf("Execution...\n\n");
+				queriesSourcedFromFile = 1;
+                FILE *f2 = fopen("workload-gen/test2.txt", "r");                
+                while(fgets(fileReadBuffer, 1023, f2)){
+                    parseRouteQuery1(fileReadBuffer, root);
+                }
+                fclose(f2);		
+                break;
+                
+            case '3':
+            	printf("TEST 3: Average Case\n");
+            	printf("Description: 16 inserts, tree needs to grow, not full at end\n");
+            	printf("Input: 10 inserts, no duplicates\n");
+            	printf("Expected Behavior: Prints tree after every insert\n");
+            	printf("Execution...\n\n");
+				queriesSourcedFromFile = 1;
+                FILE *f3 = fopen("workload-gen/test3.txt", "r");                
+                while(fgets(fileReadBuffer, 1023, f3)){
+                    parseRouteQuery2(fileReadBuffer, root);
+                }
+                fclose(f3);		
+                break;
+                
+             case '4':
+            	printf("TEST 4: Updates\n");
+            	printf("Description: Check if we're updating values\n");
+            	printf("Input: 9 inserts with values same as key, 3 updates, 4 gets (3 updated, 1 not)\n");
+            	printf("Expected Behavior: Values changed to key*11\n");
+            	printf("Execution...\n\n");
+				queriesSourcedFromFile = 1;
+                FILE *f4 = fopen("workload-gen/test4.txt", "r");                
+                while(fgets(fileReadBuffer, 1023, f4)){
+                    parseRouteQuery1(fileReadBuffer, root);
+                }
+                fclose(f4);		
+                break;
 		} 
 	}
 
