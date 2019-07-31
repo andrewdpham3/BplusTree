@@ -44,9 +44,9 @@ Tests will print out detailed descriptions, inputs, and outputs before execution
 4. Update (passing): update a value
 5. Range (failing): TODO
 6. Larger Tree (passing): insert enough to require a deeper tree, twice
-7. Edges (passing): insert to the front and back of data set
-8. Negatives (failing): insert negative numbers
-9. Back to back (passing): insert sequential numbers
+7. Negatives (failing): insert negative numbers
+8. Back to back (passing): insert sequential numbers
+9. Edges (passing): insert to the front and back of data set
 10. Large (failing): insert a very large dataset
 
 Notes:
