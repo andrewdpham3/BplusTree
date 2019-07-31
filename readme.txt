@@ -2,16 +2,10 @@ B+Tree
 Andrew Pham anp6338@g.harvard.edu
 
 Instructions:
-1. Generate a workload file
-   -Navigate into /workload-gen
-   -"make"
-   -Generate a workload ex "./generator --puts 100000 --gets 1000  > workload.txt"
-2. Run the workload
-   -"make"
-   -"./main -f workload-gen/workload.txt"
-   -"make clean"
-3. Tests
-   -TODO
+1. "make"
+2. "./main -1" (replace 1 with the number of the test number you want to run)
+   -"./main -f workload.txt" (replace workload.txt with location of custom workload)
+3. "make clean"
 
  Form:
 - This program is an implementation of a B+ Tree.
@@ -42,15 +36,18 @@ Tree diagram:
                   v                          v                          v
 0 <- [ P1 | a | P2 | b | P3 ] <-> [ P1 | a | P2 | b | P3 ] <-> [ P1 | a | P2 | b | P3 ] -> 0
 
-Built in tests:
-1. Very little data: one piece of data is inserted
-2. Insert left: a value is inserted taking spot a in a leaf
-3. Insert right: a value is inserted taking spot b in a leaf
-4. Full: A value is inserted to a full tree.
-5. End Full: A value is inserted at the very end of a full data set.
-6. Update
-7. Range
-8. 5 million: Insert the minimum 5 million data points
+Tests:
+Tests will print out detailed descriptions, inputs, and outputs before execution. Briefly the tests are listed here...
+1. One (passing): one insert
+2. Very Small (passing): few inserts, not enough to need more nodes
+3. Average (passing): insert enough to need a deeper tree, tree not full
+4. Update (passing): update a value
+5. Range (failing): TODO
+6. Larger Tree (passing): insert enough to require a deeper tree, twice
+7. Edges (passing): insert to the front and back of data set
+8. Negatives (failing): insert negative numbers
+9. Back to back (passing): insert sequential numbers
+10. Large (failing): insert a very large dataset
 
 Notes:
 This program may overflow the default maximum stack size in your system. Use command "ulimit -s unlimited" to bypass.
