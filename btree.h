@@ -340,40 +340,31 @@ void update(node* n, int a, int v){
 	}
 }
 
-/*RANGE (GRADUATE CREDIT)
-Scans are range searches for entries whose keys fall between a low key and high key.
-Consider how many nodes need to be accessed during a range search for keys, within the B+Tree?
-Can you describe two different methods to return the qualifying keys for a range search? 
-(Hint: how does the algorithm of a range search compare to an equality search? What are their similarities, what is different?)
-Can you describe a generic cost expression for Scan, measured in number of random accesses, with respect to the depth of the tree?
-*/
-
-// TODO GRADUATE: here you will need to define RANGE for finding qualifying keys and values that fall in a key range.
-
+//RANGE 
 void range(node* n, int h, int l, Array* vals){
 	if(n->leaf && n->a==l){
 		//printf("Found in a\n");
 		node* current=n;
 		while(true){
-			insertArray(&vals, current->vala);
+			insertArray(vals, current->vala);
 			if(current->vala==h)
 				break;
-			insertArray(&vals, current->valb);
+			insertArray(vals, current->valb);
 			if(current->valb==h)
 				break;
 			current=current->p3;
 		}
 	}
 	else if(n->leaf && n->b==l){
-		//printf("Found in b\n");
+		printf("Found in b\n");
 		node* current=n;
-		insertArray(&vals, current->valb);
+		insertArray(vals, current->valb);
 		current=current->p3;
 		while(true){
-			insertArray(&vals, current->vala);
+			insertArray(vals, current->vala);
 			if(current->vala==h)
 				break;
-			insertArray(&vals, current->valb);
+			insertArray(vals, current->valb);
 			if(current->valb==h)
 				break;
 			current=current->p3;
@@ -382,22 +373,22 @@ void range(node* n, int h, int l, Array* vals){
 	else if(n->leaf){
 		//printf("In Order %i %i\n", a, n->b);
 		if(n->p1 != 0 && n->p1->b <= l)
-			return range(n->p1, a);
+			return range(n->p1, h, l, vals);
 		if(n->p3 != 0 && n->p3->a >= l)
-			return range(n->p3, a);
+			return range(n->p3, h, l, vals);
 		}
 	if(!n->leaf){
-		if(a <= n->a ){
+		if(l <= n->a ){
 			//printf("%i <= %i going left\n",a, n->a);
-			return range(n->p1,l);
+			return range(n->p1,h,l,vals);
 		}
 		if((l > n->a && l < n->b)  || (l > n->a && n->b == 0)){
 			//printf("%i between %i and %i going mid\n",a, n->a, n->b);
-			return range(n->p2,a);
+			return range(n->p2,h,l,vals);
 		}
 		if(l >= n->b){
 			//printf("%i >= %i going right\n",a, n->b);
-			return range(n->p3,a);
+			return range(n->p3,h,l,vals);
 		}
 	}
 }
