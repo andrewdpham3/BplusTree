@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h> 
 #include <string.h>
+#include <time.h>
 #include "data_types.h"
 #include "btree.h"
 //#include "storage_engine.h"
@@ -33,8 +34,6 @@ int parseRouteQuery(char queryLine[], node* root){
 
     if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
         // route a point query
-        // TODO: hook this into your storage engine's put. b+tree's insert.
-        //printf("find %i\n",find(root, key));
         printf(PUT_PATTERN, key, val);
         
         if(find(root, key) == 0){
@@ -72,31 +71,22 @@ int parseRouteQuery(char queryLine[], node* root){
 	    else
     		update(root, key, val);
     	
-    	/*treeprinter	
- 		printf("                %i,%i\n", root->a, root->b);
- 		printf("    %i,%i ", root->p1->a, root->p1->b);
- 		printf("        %i,%i ", root->p2->a, root->p2->b);
- 		printf("        %i,%i\n",root->p3->a, root->p3->b);
- 		
-		node* current=first(root);
-		while(current!=0){
-			//printf("(%p)",current);
-			printf("%i,", current->a);
-			printf("%i|", current->b);
-			current=current->p3;
-		}
-        printf("\n");
-        */
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
-        // TODO: hook this into your storage engine's get. b+tree's find.
         //printf("\n");
         printf(GET_PATTERN, key);
         int val=find(root, key);
         printf("Got: %i\n", val);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
-        // NOTE: implement this for graduate credit
+		printf(RANGE_PATTERN, lowKey, highKey);
+        Array rangear;
+		initArray(&rangear,1);
+		range(root, highKey, lowKey, &rangear);
+		printf("Vals in range: ");
+		for(size_t i=0;i<rangear.used;i++)
+			printf("%i,", rangear.array[i]);
+		printf("\n");
         printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
     }else {
         // query not parsed. handle the query as unknown
@@ -245,7 +235,14 @@ int parseRouteQuery2(char queryLine[], node* root){
         printf("Got: %i\n", val);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
-        printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
+		printf(RANGE_PATTERN, lowKey, highKey);
+        Array rangear;
+		initArray(&rangear,1);
+		range(root, highKey, lowKey, &rangear);
+		printf("Vals in range: ");
+		for(size_t i=0;i<rangear.used;i++)
+			printf("%i,", rangear.array[i]);
+		printf("\n");
     }else {
         // query not parsed. handle the query as unknown
         return -1;
@@ -304,7 +301,14 @@ int parseRouteQuery3(char queryLine[], node* root){
         printf("Got: %i\n", val);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
-        printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
+		printf(RANGE_PATTERN, lowKey, highKey);
+        Array rangear;
+		initArray(&rangear,1);
+		range(root, highKey, lowKey, &rangear);
+		printf("Vals in range: ");
+		for(size_t i=0;i<rangear.used;i++)
+			printf("%i,", rangear.array[i]);
+		printf("\n");
     }else {
         // query not parsed. handle the query as unknown
         return -1;
