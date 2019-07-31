@@ -80,14 +80,13 @@ int parseRouteQuery(char queryLine[], node* root){
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
 		printf(RANGE_PATTERN, lowKey, highKey);
-        Array rangear;
-		initArray(&rangear,1);
-		range(root, highKey, lowKey, &rangear);
-		printf("Vals in range: ");
-		for(size_t i=0;i<rangear.used;i++)
-			printf("%i,", rangear.array[i]);
+        Array keysar;
+		initArray(&keysar,1);
+		range(root, highKey, lowKey, &keysar);
+		printf("Keys in range: ");
+		for(size_t i=0;i<keysar.used;i++)
+			printf("%i,", keysar.array[i]);
 		printf("\n");
-        printf(RANGE_PATTERN, lowKey, highKey); // Stubbed print for now
     }else {
         // query not parsed. handle the query as unknown
         return -1;
@@ -111,8 +110,13 @@ int parseRouteQuery1(char queryLine[], node* root){
     VAL_t val;
     char *loadPath = NULL;
     (void) loadPath;	
+	clock_t start, end, start2, end2;
+    double timeused;
     if ( sscanf(queryLine, PUT_PATTERN, &key, &val) >= 1) {  
-        printf(PUT_PATTERN, key, val);        
+        printf(PUT_PATTERN, key, val);  
+
+		start=clock();			
+      
         if(find(root, key) == 0){
     		insert(root, key, val);	
     		//trigger treebuild
@@ -136,6 +140,11 @@ int parseRouteQuery1(char queryLine[], node* root){
 				}
 			}
 			newtree(root, &keys, keys.used, &values);
+
+		end=clock();
+		timeused = ((double) (end - start)) / CLOCKS_PER_SEC;
+		printf("%f\n",timeused);
+
     	}else{
     		//printf("UPDATE!");
     		update(root, key, val);
@@ -153,17 +162,23 @@ int parseRouteQuery1(char queryLine[], node* root){
     }else if( sscanf(queryLine, GET_PATTERN, &key) >= 1 ) {
         // route a get query
         printf(GET_PATTERN, key);
+		start2=clock();	
         int val=find(root, key);
-        printf("Got: %i\n", val);
+		end2=clock();        
+		printf("Got: %i\n", val);
+		
+
+		timeused = ((double) (end2 - start2)) / CLOCKS_PER_SEC;
+		printf("%f\n",timeused);
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
 		printf(RANGE_PATTERN, lowKey, highKey);
-        Array rangear;
-		initArray(&rangear,1);
-		range(root, highKey, lowKey, &rangear);
-		printf("Vals in range: ");
-		for(size_t i=0;i<rangear.used;i++)
-			printf("%i,", rangear.array[i]);
+        Array keysar;
+		initArray(&keysar,1);
+		range(root, highKey, lowKey, &keysar);
+		printf("Keys in range: ");
+		for(size_t i=0;i<keysar.used;i++)
+			printf("%i,", keysar.array[i]);
 		printf("\n");
     }else {
         // query not parsed. handle the query as unknown
@@ -236,12 +251,12 @@ int parseRouteQuery2(char queryLine[], node* root){
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
 		printf(RANGE_PATTERN, lowKey, highKey);
-        Array rangear;
-		initArray(&rangear,1);
-		range(root, highKey, lowKey, &rangear);
-		printf("Vals in range: ");
-		for(size_t i=0;i<rangear.used;i++)
-			printf("%i,", rangear.array[i]);
+        Array keysar;
+		initArray(&keysar,1);
+		range(root, highKey, lowKey, &keysar);
+		printf("Keys in range: ");
+		for(size_t i=0;i<keysar.used;i++)
+			printf("%i,", keysar.array[i]);
 		printf("\n");
     }else {
         // query not parsed. handle the query as unknown
@@ -302,12 +317,12 @@ int parseRouteQuery3(char queryLine[], node* root){
     }else if( sscanf(queryLine, RANGE_PATTERN, &lowKey, &highKey) >= 1 ) {
         // route a range query
 		printf(RANGE_PATTERN, lowKey, highKey);
-        Array rangear;
-		initArray(&rangear,1);
-		range(root, highKey, lowKey, &rangear);
-		printf("Vals in range: ");
-		for(size_t i=0;i<rangear.used;i++)
-			printf("%i,", rangear.array[i]);
+        Array keysar;
+		initArray(&keysar,1);
+		range(root, highKey, lowKey, &keysar);
+		printf("Keys in range: ");
+		for(size_t i=0;i<keysar.used;i++)
+			printf("%i,", keysar.array[i]);
 		printf("\n");
     }else {
         // query not parsed. handle the query as unknown
