@@ -13,7 +13,7 @@ Function:
 - Get will find a key and return its corresponding value
 - Put will insert a new key & value into the correct location if not found
 - Put will update a value if its key is found
-- TODO range
+- Range will return all values inbetween two keys
 - An insert on a full leaf node will use the in order pointers to shift numbers over.
 - A data shift will activate a rebuild of the tree's internal nodes.
 - The tree will automatically rebuild with the minimum required depth to hold the data.
@@ -42,7 +42,7 @@ Tests will print out detailed descriptions, inputs, and outputs before execution
 3. Average (passing): insert enough to need a deeper tree, tree not full
 4. Update (passing): update a value
 5. Larger Tree (passing): insert enough to require a deeper tree, twice
-6. Range: TODO
+6. Range (passing): find all values in a range
 7. Negatives (failing): insert negative numbers
 8. Back to back (passing): insert sequential numbers
 9. Edges (passing): insert to the front and back of data set
